@@ -1,0 +1,26 @@
+# Object files
+*.o
+
+# Dependency rules
+*.d
+
+# Executables
+bin/*
+deploy/*
+
+# Asset files
+*.xcf
+*.wav
+*.gif
+promo/*
+
+# Log files
+*.log
+
+# Temp files
+*.swp
+*~
+
+# Deploy script (still a WIP, based on https://github.com/SirGFM/jjat_2/tree/v0.5.1/rush)
+rush/*
+
