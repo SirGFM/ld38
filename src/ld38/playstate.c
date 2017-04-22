@@ -6,6 +6,7 @@
 #include <GFraMe/gfmParser.h>
 #include <ld38/chunk.h>
 #include <ld38/level_list.h>
+#include <ld38/player.h>
 #include <ld38/playstate.h>
 #include <stdint.h>
 
@@ -75,6 +76,8 @@ err playstate_reset() {
     }
     playstate.pCurChunk = playstate.pWorld[levels_getMainIndex()];
 
+    player_reset();
+
     return ERR_OK;
 }
 
@@ -85,6 +88,8 @@ err playstate_update() {
     ASSERT(game.currentState == ST_PLAYSTATE, ERR_INVALID_STATE);
 
     erv = chunk_update(playstate.pCurChunk);
+    ASSERT(erv == ERR_OK, erv);
+    erv = player_update();
     ASSERT(erv == ERR_OK, erv);
 
     return ERR_OK;
@@ -97,6 +102,8 @@ err playstate_draw() {
     ASSERT(game.currentState == ST_PLAYSTATE, ERR_INVALID_STATE);
 
     erv = chunk_draw(playstate.pCurChunk);
+    ASSERT(erv == ERR_OK, erv);
+    erv = player_draw();
     ASSERT(erv == ERR_OK, erv);
 
     return ERR_OK;

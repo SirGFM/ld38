@@ -25,10 +25,10 @@
         , gfmKey_left) \
   X_KEY(right \
         , gfmKey_right) \
-  X_KEY(up \
+  X_KEY(jump \
         , gfmKey_up) \
-  X_KEY(down \
-        , gfmKey_down) \
+  X_KEY(verb \
+        , gfmKey_c) \
   X_KEY(pause \
         , gfmKey_esc)
 
@@ -38,14 +38,23 @@
   X_GPAD(left \
         , gfmController_laxis_left \
         , 0/*port*/) \
+  X_GPAD(left \
+        , gfmController_left \
+        , 0/*port*/) \
   X_GPAD(right \
         , gfmController_laxis_right \
         , 0/*port*/) \
-  X_GPAD(up \
-        , gfmController_laxis_up \
+  X_GPAD(right \
+        , gfmController_right \
         , 0/*port*/) \
-  X_GPAD(down \
-        , gfmController_laxis_down \
+  X_GPAD(jump \
+        , gfmController_b \
+        , 0/*port*/) \
+  X_GPAD(jump \
+        , gfmController_x \
+        , 0/*port*/) \
+  X_GPAD(verb \
+        , gfmController_a \
         , 0/*port*/) \
   X_GPAD(pause \
         , gfmController_start \

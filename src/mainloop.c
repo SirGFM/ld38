@@ -13,6 +13,7 @@
 #include <GFraMe/gfmError.h>
 #include <GFraMe/gfmQuadtree.h>
 
+#include <ld38/player.h>
 #include <ld38/playstate.h>
 
 /** Run the main loop until the game is closed */
@@ -20,6 +21,8 @@ err mainloop() {
     err erv;
     gfmRV rv;
 
+    erv = player_init();
+    ASSERT(erv == ERR_OK, erv);
     erv = playstate_init();
     ASSERT(erv == ERR_OK, erv);
 
@@ -102,6 +105,7 @@ err mainloop() {
     erv = ERR_OK;
 __ret:
     playstate_clean();
+    player_clean();
 
     return erv;
 }
