@@ -3,13 +3,16 @@
  * objects/entities that the player may interact with, as well as a pointer to
  * any parenting chunk (so they may all be rendered).
  */
+#include <base/collision.h>
 #include <base/error.h>
 #include <base/game.h>
 #include <base/gfx.h>
 #include <conf/type.h>
 #include <GFraMe/gfmError.h>
 #include <GFraMe/gfmHitbox.h>
+#include <GFraMe/gfmObject.h>
 #include <GFraMe/gfmParser.h>
+#include <GFraMe/gfmQuadtree.h>
 #include <GFraMe/gfmTilemap.h>
 #include <ld38/chunk.h>
 #include <ld38/interactable.h>
@@ -46,6 +49,12 @@ struct stChunk {
     uint32_t areaCount;
     /** Number of interactables used */
     uint32_t interactableCount;
+    /* Chunk's position */
+    int x;
+    int y;
+    /* Chunk's dimensions */
+    int height;
+    int width;
     /** "Statically" alloc'ed data for any interactable within this chunk */
     interactable data[MAX_INTERACTIBLE];
 };
@@ -73,7 +82,7 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
     chunk *pCtx;
     err erv;
     gfmRV rv;
-    int len, offX, offY;
+    int i, len;
 
     ASSERT(ppCtx, ERR_ARGUMENTBAD);
     ASSERT(pParser, ERR_ARGUMENTBAD);
@@ -92,8 +101,8 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
     rv = gfmParser_init(pParser, game.pCtx, (char*)pObjects, len);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
-    offX = 0;
-    offY = 0;
+    pCtx->x = 0;
+    pCtx->y = 0;
     while (1) {
         char *pType;
 
@@ -108,11 +117,11 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
         rv = gfmParser_getIngameType(&pType, pParser);
         ASSERT(rv == GFMRV_OK, ERR_GFMERR);
         if (strcmp(pType, "offset") == 0) {
-            rv = gfmParser_getPos(&offX, &offY, pParser);
+            rv = gfmParser_getPos(&pCtx->x, &pCtx->y, pParser);
             ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
-            offX *= -1;
-            offY *= -1;
+            pCtx->x *= -1;
+            pCtx->y *= -1;
         }
         else if (strcmp(pType, "wall") == 0) {
             int h, w, x, y;
@@ -122,8 +131,8 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
             rv = gfmParser_getDimensions(&w, &h, pParser);
             ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
-            x += offX;
-            y += offY;
+            x += pCtx->x;
+            y += pCtx->y;
             rv = gfmHitbox_initItem(pCtx->pAreas, 0/*pCtx*/, x, y, w, h, T_WALL
                     , pCtx->areaCount);
             ASSERT(rv == GFMRV_OK, ERR_GFMERR);
@@ -160,8 +169,8 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
             pData->t = T_DOOR;
             pData->verb = ACT_ENTER;
 
-            x += offX;
-            y += offY;
+            x += pCtx->x;
+            y += pCtx->y;
             rv = gfmHitbox_initItem(pCtx->pAreas, pData, x, y, w, h, T_DOOR
                     , pCtx->areaCount);
             ASSERT(rv == GFMRV_OK, ERR_GFMERR);
@@ -178,6 +187,28 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
     rv = gfmTilemap_loadf(pCtx->pMap, game.pCtx, (char*)pTilemap, len
             , pDictNames, pDictTypes, dictLen);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmTilemap_getDimension(&pCtx->width, &pCtx->height, pCtx->pMap);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmTilemap_setPosition(pCtx->pMap, pCtx->x, pCtx->y);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    /* Fix area's position */
+    /* TODO Fix this bug on the framework! */
+    rv = gfmTilemap_getAreasLength(&len, pCtx->pMap);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    for (i = 0; i < len; i++) {
+        gfmObject *pObj;
+        int x, y;
+
+        rv = gfmTilemap_getArea(&pObj, pCtx->pMap, i);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        rv = gfmObject_getPosition(&x, &y, pObj);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        x += pCtx->x;
+        y += pCtx->y;
+        rv = gfmObject_setPosition(pObj, x, y);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    }
 
     return ERR_OK;
 }
@@ -193,10 +224,20 @@ err chunk_reset(chunk *pCtx) {
 
 /** Update the chunk and load this frame's collision information */
 err chunk_update(chunk *pCtx) {
+    gfmRV rv;
+
     ASSERT(pCtx, ERR_ARGUMENTBAD);
 
-    /* TODO Re-initialize the quadtree to this chunk's dimensions */
-    /* TODO Add geometry to the quadtree */
+    /* Re-initialize the quadtree to this chunk's dimensions */
+    rv = gfmQuadtree_initRoot(collision.pQt, pCtx->x - 8, pCtx->y - 8
+            , pCtx->width + 16, pCtx->height + 16, 8/*depth*/, 16/*nodes*/);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    /* Add geometry to the quadtree */
+    rv = gfmQuadtree_populateTilemap(collision.pQt, pCtx->pMap);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmHitbox_populateQuadtree(pCtx->pAreas, collision.pQt, pCtx->areaCount);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
     return ERR_OK;
 }

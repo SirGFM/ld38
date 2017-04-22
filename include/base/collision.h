@@ -19,8 +19,6 @@ typedef enum enCollisionFlags collisionFlags;
 struct stCollisionCtx {
     /** Quadtree's root */
     gfmQuadtreeRoot *pQt;
-    /** Static quadtree's root */
-    gfmQuadtreeRoot *pStaticQt;
     /** Controls the collision */
     collisionFlags flags;
 };
