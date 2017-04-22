@@ -24,3 +24,6 @@ promo/*
 # Deploy script (still a WIP, based on https://github.com/SirGFM/jjat_2/tree/v0.5.1/rush)
 rush/*
 
+# Timelapse "status bar"
+status.txt
+

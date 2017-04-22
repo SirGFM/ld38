@@ -15,6 +15,7 @@
     X(ERR_GFMERR) \
     X(ERR_PARSINGERR) \
     X(ERR_UNHANDLED_COLLISION) \
+    X(ERR_INVALID_STATE) \
     X(ERR_MAX)
 
 #endif /* __CONF_ERROR_LIST_H__ */
