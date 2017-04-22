@@ -1,0 +1,4 @@
+obj door 192 183 16 16 [ target , pop ]
+area wall 168 144 8 64
+area wall 224 144 8 64
+area wall 168 136 64 8

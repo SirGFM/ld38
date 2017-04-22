@@ -158,6 +158,11 @@ obj/$(OS)_debug/%.o: %.c
 # Include every rule from a depency (properly tracks header dependency)
 -include $(OBJLIST:%.o=%.d)
 
+misc/auto/level_list.h: $(wildcard assets/lvl/*.gfm)
+	@ echo '[OFF] Updating level list'
+	@ mkdir -p misc/auto/
+	@ bash misc/update_levels.sh
+
 misc/auto/collisioncases.c: misc/collision.json
 	@ echo '[OFF] Generating collision switch-case'
 	@ mkdir -p misc/auto/

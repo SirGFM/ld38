@@ -9,6 +9,10 @@
 
 #define MAX_CHUNK   32
 
+char *level_list[] = {
+    #include <auto/level_list.h>
+};
+
 struct stPlaystate {
     /** All chunks loaded into the game. The main chunk is expected to be the
      * first one. */
