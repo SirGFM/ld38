@@ -101,11 +101,7 @@
 </data>
  </layer>
  <objectgroup name="library_obj" offsetx="168" offsety="136">
-  <object id="17" name="offset" x="-168" y="-136" width="8" height="8">
-   <properties>
-    <property name="x" value=""/>
-   </properties>
-  </object>
+  <object id="17" name="library_offset" type="offset" x="-168" y="-136" width="8" height="8"/>
   <object id="18" name="library_exit" type="door" x="24.364" y="47.909" width="16" height="16">
    <properties>
     <property name="target" value="pop"/>

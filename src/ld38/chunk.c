@@ -9,8 +9,8 @@
 #include <GFraMe/gfmParser.h>
 #include <GFraMe/gfmTilemap.h>
 #include <ld38/chunk.h>
-
 #include <stdlib.h>
+#include <string.h>
 
 struct stChunk {
     /** The tilemap */
@@ -47,6 +47,7 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
         , const char *pObjects) {
     chunk *pCtx;
     gfmRV rv;
+    int len, offX, offY;
 
     ASSERT(ppCtx, ERR_ARGUMENTBAD);
     ASSERT(pParser, ERR_ARGUMENTBAD);
@@ -57,6 +58,36 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
     ASSERT(pCtx, ERR_ALLOC_FAILED);
     *ppCtx = pCtx;
 
+    /* First, parse the objects (mainly to retrieve the chunk's offset) */
+    len = (int)strlen(pObjects);
+    rv = gfmParser_init(pParser, game.pCtx, (char*)pObjects, len);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    offX = 0;
+    offY = 0;
+    while (1) {
+        char *pType;
+
+        rv = gfmParser_parseNext(pParser);
+        ASSERT(rv == GFMRV_OK || rv == GFMRV_PARSER_FINISHED, ERR_GFMERR);
+        if (rv == GFMRV_PARSER_FINISHED) {
+            break;
+        }
+
+        /* These strcmp are safe because the parser guarantees it's a string of
+         * resonable length */
+        rv = gfmParser_getIngameType(&pType, pParser);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        if (strcmp(pType, "offset") == 0) {
+            rv = gfmParser_getPos(&offX, &offY, pParser);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+            offX *= -1;
+            offY *= -1;
+        }
+    }
+
+    len = (int)strlen(pTilemap);
     rv = gfmTilemap_getNew(&pCtx->pMap);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
