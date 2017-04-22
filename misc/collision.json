@@ -1,3 +1,30 @@
 {
+    "floor_collision": {
+        "type_a": ["T_FLOOR", "T_WALL"],
+        "cases": [
+            {
+                "type_b": ["T_PLAYER"],
+                "function": "_defaultFloorCollision"
+            },
+            {
+                "type_b": ["T_FLOOR", "T_WALL", "T_INTERACTABLE", "T_DOOR"],
+                "function": null,
+                "auto_swap": false
+            }
+        ]
+    },
+    "interactable": {
+        "type_a": ["T_INTERACTABLE", "T_DOOR"],
+        "cases": [
+            {
+                "type_b": ["T_PLAYER"],
+                "function": "_onInteract"
+            },
+            {
+                "type_b": ["T_FLOOR", "T_WALL", "T_INTERACTABLE", "T_DOOR"],
+                "function": null,
+                "auto_swap": false
+            }
+        ]
+    }
 }
-

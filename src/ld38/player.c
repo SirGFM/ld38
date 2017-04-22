@@ -13,10 +13,11 @@
 #include <ld38/entity_macros.h>
 #include <ld38/player.h>
 
+/** TODO ADJUST */
 #define PL_SPEED                TILES_TO_PX(5)
-#define PL_JUMP_SPEED           JUMP_SPEED(50, 4)
-#define PL_JUMP_ACCELERATION    JUMP_ACCELERATION(50, 4)
-#define PL_FALL_ACCELERATION    JUMP_ACCELERATION(30, 4)
+#define PL_JUMP_SPEED           JUMP_SPEED(25, 3)
+#define PL_JUMP_ACCELERATION    JUMP_ACCELERATION(25, 3)
+#define PL_FALL_ACCELERATION    JUMP_ACCELERATION(18, 3)
 
 struct stPlayer {
     gfmSprite *pSelf;
@@ -56,6 +57,7 @@ err player_reset() {
 /** Update the player */
 err player_update() {
     double vx, vy;
+    err erv;
     gfmRV rv;
     gfmCollision dir;
 
@@ -95,10 +97,8 @@ err player_update() {
 
     rv = gfmQuadtree_collideSprite(collision.pQt, player.pSelf);
     if (rv == GFMRV_QUADTREE_OVERLAPED) {
-#if 0
         erv = doCollide(collision.pQt);
         ASSERT(erv == ERR_OK, erv);
-#endif
         rv = GFMRV_QUADTREE_DONE;
     }
     ASSERT(rv == GFMRV_QUADTREE_DONE, ERR_GFMERR);

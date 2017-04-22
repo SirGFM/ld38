@@ -48,6 +48,60 @@ typedef struct stCollisionNode collisionNode;
 #define IGNORE(type1, type2) \
     case (MERGE_TYPES(type1, type2)):
 
+/** Collide the player against an interactable */
+static inline err _onInteract(collisionNode *pInteractable
+        , collisionNode *pPlayer) {
+    /** TODO */
+    return ERR_OK;
+}
+
+/** Collide a solid (floor or wall) against an entity */
+static inline err _defaultFloorCollision(collisionNode *pSolid
+        , collisionNode *pEntity) {
+    gfmRV rv;
+
+    rv = gfmObject_collide(pSolid->pObject, pEntity->pObject);
+    if (rv == GFMRV_TRUE) {
+        gfmCollision dir;
+
+        gfmObject_getCurrentCollision(&dir, pEntity->pObject);
+        if (dir & gfmCollision_down) {
+            int ew, ex, ey, sw, sx;
+
+            /* Check if colliding against the corner and push it */
+            gfmObject_getPosition(&ex, &ey, pEntity->pObject);
+            gfmObject_getWidth(&ew, pEntity->pObject);
+            gfmObject_getHorizontalPosition(&sx, pSolid->pObject);
+            gfmObject_getWidth(&sw, pSolid->pObject);
+
+            if (ex + ew == sx) {
+                /* Push slightly to the right */
+                gfmObject_setPosition(pEntity->pObject, ex + 1, ey - 1);
+            }
+            else if (ex + ew == sx - 1) {
+                /* Push slightly to the right */
+                gfmObject_setPosition(pEntity->pObject, ex + 2, ey - 1);
+            }
+            else if (ex == sx + sw) {
+                /* Push slightly to the left */
+                gfmObject_setPosition(pEntity->pObject, ex - 1, ey - 1);
+            }
+            else if (ex == sx + sw + 1) {
+                /* Push slightly to the left */
+                gfmObject_setPosition(pEntity->pObject, ex - 2, ey - 1);
+            }
+            else {
+                gfmObject_setVerticalVelocity(pEntity->pObject, 0);
+            }
+        }
+        else if (dir & gfmCollision_up) {
+            gfmObject_setVerticalVelocity(pEntity->pObject, 0);
+        }
+    }
+
+    return ERR_OK;
+}
+
 /**
  * Retrieve the type and all the children for a given object.
  *
