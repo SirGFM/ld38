@@ -7,6 +7,9 @@
 #include <base/error.h>
 #include <stdint.h>
 
+/** Retrieve the index of the main level */
+uint32_t levels_getMainIndex();
+
 /** Retrieve the number of availables levels */
 uint32_t levels_getNum();
 

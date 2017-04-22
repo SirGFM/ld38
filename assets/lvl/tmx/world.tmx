@@ -56,7 +56,7 @@
   <object id="3" name="locked_door" type="door" x="88" y="200" width="8" height="16"/>
   <object id="4" name="open_door" type="door" x="192" y="184" width="16" height="16">
    <properties>
-    <property name="target" value="lvl/library_tm.gfm"/>
+    <property name="target" value="lvl/library_obj.gfm"/>
    </properties>
   </object>
   <object id="13" name="wall_l" type="wall" x="-8" y="0" width="8" height="240"/>

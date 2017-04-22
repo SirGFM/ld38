@@ -39,24 +39,24 @@ void playstate_clean() {
 err playstate_init() {
     err erv;
     gfmRV rv;
-    uint32_t i;
 
     rv = gfmParser_getNew(&playstate.pParser);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
-    for (i = 0; i < levels_getNum(); i++) {
+    for (playstate.chunkCount = 0; playstate.chunkCount < levels_getNum();
+            playstate.chunkCount++) {
         const char *pTilemap, *pObjects;
 
-        ASSERT(i < MAX_CHUNK, ERR_INVALID_INDEX);
+        ASSERT(playstate.chunkCount < MAX_CHUNK, ERR_INVALID_INDEX);
 
-        erv = levels_getFiles(&pTilemap, &pObjects, i);
-        ASSERT(erv == ERR_OK, erv);
-        erv = chunk_init(playstate.pWorld, playstate.pParser, pTilemap
-                , pObjects);
+        erv = levels_getFiles(&pTilemap, &pObjects, playstate.chunkCount);
         ASSERT(erv == ERR_OK, erv);
 
         rv = gfmParser_reset(playstate.pParser);
         ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        erv = chunk_init(playstate.pWorld + playstate.chunkCount
+                , playstate.pParser, pTilemap, pObjects);
+        ASSERT(erv == ERR_OK, erv);
     }
 
     return ERR_OK;
@@ -73,7 +73,7 @@ err playstate_reset() {
         erv = chunk_reset(playstate.pWorld[i]);
         ASSERT(erv == ERR_OK, erv);
     }
-    playstate.pCurChunk = playstate.pWorld[0];
+    playstate.pCurChunk = playstate.pWorld[levels_getMainIndex()];
 
     return ERR_OK;
 }

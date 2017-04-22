@@ -6,10 +6,21 @@
 #include <stdint.h>
 #include <string.h>
 
-/* NOTE: Each entry occupies 2 indexes: the tilemap and its objects */
+/** NOTE: Each entry occupies 2 indexes: the tilemap and its objects. Since they
+ * are listed by the system (calling 'ls'), they are returned in alphabetical
+ * order. This causes object layers to be listed before tilemap layers.
+ *
+ * Also, the entry point isn't necessarily the first level! */
 static const char *level_list[] = {
     #include <auto/level_list.h>
 };
+
+/** Retrieve the index of the main level */
+uint32_t levels_getMainIndex() {
+    return
+        #include <auto/entry_point.h>
+        ;
+}
 
 /** Retrieve the number of availables levels */
 uint32_t levels_getNum() {
@@ -23,8 +34,8 @@ err levels_getFiles(const char **ppTilemap, const char **ppObjects
     ASSERT(ppTilemap, ERR_ARGUMENTBAD);
     ASSERT(ppObjects, ERR_ARGUMENTBAD);
 
-    *ppTilemap = level_list[index * 2];
-    *ppObjects = level_list[index * 2 + 1];
+    *ppObjects = level_list[index * 2];
+    *ppTilemap = level_list[index * 2 + 1];
 
     return ERR_OK;
 }
