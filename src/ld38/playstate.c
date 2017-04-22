@@ -3,8 +3,11 @@
  */
 #include <base/error.h>
 #include <base/game.h>
+#include <base/input.h>
 #include <GFraMe/gfmParser.h>
 #include <ld38/chunk.h>
+#include <ld38/event_handler.h>
+#include <ld38/interactable.h>
 #include <ld38/level_list.h>
 #include <ld38/player.h>
 #include <ld38/playstate.h>
@@ -83,14 +86,42 @@ err playstate_reset() {
 
 /** Update a single frame */
 err playstate_update() {
+    interactable *pEvent;
     err erv;
 
     ASSERT(game.currentState == ST_PLAYSTATE, ERR_INVALID_STATE);
+    ASSERT(playstate.pCurChunk != 0, ERR_INVALID_STATE);
 
+    eventHandler_unqueue();
     erv = chunk_update(playstate.pCurChunk);
     ASSERT(erv == ERR_OK, erv);
     erv = player_update();
     ASSERT(erv == ERR_OK, erv);
+
+    pEvent = eventHandler_getQueued();
+    if (pEvent != 0 && DID_JUST_PRESS(verb)) {
+        switch (pEvent->verb) {
+            case ACT_ENTER: {
+                chunk *pNext;
+
+                if (pEvent->data.door.target == DOOR_TARGET_POP) {
+                    /* Pop a previously queued chunk */
+                    pNext = chunk_popParent(playstate.pCurChunk);
+                }
+                else {
+                    ASSERT(pEvent->data.door.target < MAX_CHUNK
+                            , ERR_INVALID_INDEX);
+                    pNext = chunk_pushParent(
+                            playstate.pWorld[pEvent->data.door.target]
+                            , playstate.pCurChunk);
+                }
+                playstate.pCurChunk = pNext;
+            } break;
+            default: {
+                ASSERT(0, ERR_INVALID_EVENT);
+            }
+        }
+    }
 
     return ERR_OK;
 }

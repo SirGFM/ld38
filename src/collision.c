@@ -12,11 +12,11 @@
 #include <base/error.h>
 #include <base/game.h>
 #include <conf/type.h>
-
 #include <GFraMe/gfmError.h>
 #include <GFraMe/gfmObject.h>
 #include <GFraMe/gfmQuadtree.h>
 #include <GFraMe/gfmSprite.h>
+#include <ld38/event_handler.h>
 
 #if defined(DEBUG) && !(defined(__WIN32) || defined(__WIN32__))
 #  include <stdlib.h>
@@ -51,7 +51,11 @@ typedef struct stCollisionNode collisionNode;
 /** Collide the player against an interactable */
 static inline err _onInteract(collisionNode *pInteractable
         , collisionNode *pPlayer) {
-    /** TODO */
+    if (gfmObject_isOverlaping(pInteractable->pObject, pPlayer->pObject)
+            == GFMRV_TRUE) {
+        eventHandler_queue((interactable *)pInteractable->pChild);
+    }
+
     return ERR_OK;
 }
 

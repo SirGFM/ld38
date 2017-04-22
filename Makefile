@@ -27,6 +27,7 @@
          base/static.o \
          base/setup.o \
          ld38/chunk.o \
+         ld38/event_handler.o \
          ld38/level_list.o \
          ld38/player.o \
          ld38/playstate.o \

@@ -28,6 +28,12 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
 /** Reset the chunk to its initial state */
 err chunk_reset(chunk *pCtx);
 
+/** Push a chunk. Returns the chunk itself. */
+chunk* chunk_pushParent(chunk *pSelf, chunk *pParent);
+
+/** Pop a chunk */
+chunk* chunk_popParent(chunk *pCtx);
+
 /** Update the chunk and load this frame's collision information */
 err chunk_update(chunk *pCtx);
 

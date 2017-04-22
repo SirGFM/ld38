@@ -160,7 +160,7 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
             ASSERT(strcmp(pKey, "target") == 0, ERR_PARSINGERR);
 
             if (strcmp(pVal, "pop") == 0) {
-                pData->data.door.target = 0;
+                pData->data.door.target = DOOR_TARGET_POP;
             }
             else {
                 erv = levels_getIndex(&pData->data.door.target, pVal);
@@ -220,6 +220,22 @@ err chunk_reset(chunk *pCtx) {
     pCtx->pParent = 0;
 
     return ERR_OK;
+}
+
+/** Push a chunk. Returns the chunk itself. */
+chunk* chunk_pushParent(chunk *pSelf, chunk *pParent) {
+    pSelf->pParent = pParent;
+    return pSelf;
+}
+
+/** Pop a chunk */
+chunk* chunk_popParent(chunk *pCtx) {
+    chunk *pTmp;
+
+    pTmp = pCtx->pParent;
+    pCtx->pParent = 0;
+
+    return pTmp;
 }
 
 /** Update the chunk and load this frame's collision information */

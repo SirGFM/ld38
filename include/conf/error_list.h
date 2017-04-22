@@ -19,6 +19,7 @@
     X(ERR_ALLOC_FAILED) \
     X(ERR_INVALID_INDEX) \
     X(ERR_ITEM_NOT_FOUND) \
+    X(ERR_INVALID_EVENT) \
     X(ERR_MAX)
 
 #endif /* __CONF_ERROR_LIST_H__ */

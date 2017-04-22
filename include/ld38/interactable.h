@@ -7,6 +7,8 @@
 #include <conf/type.h>
 #include <stdint.h>
 
+#define DOOR_TARGET_POP 0x10000
+
 /** List of actions. The priority grows with the number/index. */
 enum enAction {
     ACT_ENTER = 0
@@ -16,7 +18,7 @@ typedef enum enAction action;
 
 /** Data used by doors */
 struct stDoor {
-    /** Index of the door's target. 0 means 'pop' */
+    /** Index of the door's target */
     uint32_t target;
 };
 
