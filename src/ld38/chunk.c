@@ -5,6 +5,8 @@
  */
 #include <base/error.h>
 #include <base/game.h>
+#include <base/gfx.h>
+#include <conf/type.h>
 #include <GFraMe/gfmError.h>
 #include <GFraMe/gfmHitbox.h>
 #include <GFraMe/gfmParser.h>
@@ -17,6 +19,21 @@
 
 #define MAX_HITBOX          128
 #define MAX_INTERACTIBLE    64
+#define TM_DEFAULT_WIDTH    40
+#define TM_DEFAULT_HEIGHT   30
+#define TM_DEFAULT_TILE     -1
+
+static char *pDictNames[] = {
+#define X(name, type)   name,
+    X_TYPE_DICT
+#undef X
+};
+static int pDictTypes[] = {
+#define X(name, type)   type,
+    X_TYPE_DICT
+#undef X
+};
+static int dictLen = sizeof(pDictTypes) / sizeof(int);
 
 struct stChunk {
     /** The tilemap */
@@ -155,6 +172,12 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
     len = (int)strlen(pTilemap);
     rv = gfmTilemap_getNew(&pCtx->pMap);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmTilemap_init(pCtx->pMap, gfx.pSset8x8, TM_DEFAULT_WIDTH
+            , TM_DEFAULT_HEIGHT, TM_DEFAULT_TILE);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmTilemap_loadf(pCtx->pMap, game.pCtx, (char*)pTilemap, len
+            , pDictNames, pDictTypes, dictLen);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
     return ERR_OK;
 }
@@ -181,6 +204,7 @@ err chunk_update(chunk *pCtx) {
 /** Draw this chunk and its parents */
 err chunk_draw(chunk *pCtx) {
     err erv;
+    gfmRV rv;
 
     ASSERT(pCtx, ERR_ARGUMENTBAD);
 
@@ -188,6 +212,9 @@ err chunk_draw(chunk *pCtx) {
         erv = chunk_draw(pCtx->pParent);
         ASSERT(erv == ERR_OK, erv);
     }
+
+    rv = gfmTilemap_draw(pCtx->pMap, game.pCtx);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
     return ERR_OK;
 }

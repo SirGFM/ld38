@@ -32,5 +32,9 @@ enum enType {
 };
 typedef enum enType type;
 
+/** X-Macro used by chunk to create the list of parse-able types */
+#define X_TYPE_DICT \
+    X("floor", T_FLOOR)
+
 #endif /* __CONF_TYPE_H__ */
 

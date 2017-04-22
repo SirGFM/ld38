@@ -17,7 +17,7 @@
  * sub-directory within ORG where logs and save data are stored) */
 #define TITLE       "GFM's LD#38 Entry"
 /** Initial background color (only for the virtual window) */
-#define BG_COLOR    0xFF222034
+#define BG_COLOR    0xFF639BFF
 
 #endif /* __CONF_GAME_H__ */
 
