@@ -21,6 +21,9 @@ err player_update();
 /** Draw the player */
 err player_draw();
 
+/** Try to jump */
+err player_tryJump();
+
 /** Retrieve the player's position */
 void player_getTopLeftPosition(int *pX, int *pY);
 

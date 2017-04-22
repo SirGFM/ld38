@@ -25,35 +25,39 @@
         , gfmKey_left) \
   X_KEY(right \
         , gfmKey_right) \
-  X_KEY(jump \
+  X_KEY(action \
         , gfmKey_up) \
-  X_KEY(verb \
-        , gfmKey_c) \
   X_KEY(pause \
         , gfmKey_esc)
 
 
 /** Add default alternate mappings for buttons */
 #define X_ALTERNATE_BUTTON_MAPPING \
+  X_KEY(left \
+        , gfmKey_a) \
+  X_KEY(left \
+        , gfmKey_q) \
   X_GPAD(left \
         , gfmController_laxis_left \
         , 0/*port*/) \
   X_GPAD(left \
         , gfmController_left \
         , 0/*port*/) \
+  X_KEY(right \
+        , gfmKey_d) \
   X_GPAD(right \
         , gfmController_laxis_right \
         , 0/*port*/) \
   X_GPAD(right \
         , gfmController_right \
         , 0/*port*/) \
-  X_GPAD(jump \
-        , gfmController_b \
-        , 0/*port*/) \
-  X_GPAD(jump \
-        , gfmController_x \
-        , 0/*port*/) \
-  X_GPAD(verb \
+  X_KEY(action \
+        , gfmKey_x) \
+  X_KEY(left \
+        , gfmKey_w) \
+  X_KEY(left \
+        , gfmKey_z) \
+  X_GPAD(action \
         , gfmController_a \
         , 0/*port*/) \
   X_GPAD(pause \

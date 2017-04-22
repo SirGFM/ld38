@@ -104,7 +104,7 @@ err playstate_update() {
     ASSERT(erv == ERR_OK, erv);
 
     pEvent = eventHandler_getQueued();
-    if (pEvent != 0 && DID_JUST_PRESS(verb)) {
+    if (pEvent != 0 && DID_JUST_PRESS(action)) {
         switch (pEvent->verb) {
             case ACT_ENTER: {
                 chunk *pNext;
@@ -126,6 +126,10 @@ err playstate_update() {
                 ASSERT(0, ERR_INVALID_EVENT);
             }
         }
+    }
+    else {
+        erv = player_tryJump();
+        ASSERT(erv == ERR_OK, erv);
     }
 
     player_getTopLeftPosition(&px, &py);

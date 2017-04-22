@@ -75,14 +75,7 @@ err player_update() {
 
     rv = gfmSprite_getCollision(&dir, player.pSelf);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-    if ((dir & gfmCollision_down) && DID_JUST_PRESS(jump)) {
-        rv = gfmSprite_setVerticalVelocity(player.pSelf, PL_JUMP_SPEED);
-        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-        rv = gfmSprite_setVerticalAcceleration(player.pSelf
-                , PL_JUMP_ACCELERATION);
-        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-    }
-    else {
+    if (!(dir & gfmCollision_down)) {
         rv = gfmSprite_getVerticalVelocity(&vy, player.pSelf);
         ASSERT(rv == GFMRV_OK, ERR_GFMERR);
         if (vy >= 0) {
@@ -112,6 +105,24 @@ err player_draw() {
 
     rv = gfmSprite_draw(player.pSelf, game.pCtx);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    return ERR_OK;
+}
+
+/** Try to jump */
+err player_tryJump() {
+    gfmRV rv;
+    gfmCollision dir;
+
+    rv = gfmSprite_getCollision(&dir, player.pSelf);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    if ((dir & gfmCollision_down) && DID_JUST_PRESS(action)) {
+        rv = gfmSprite_setVerticalVelocity(player.pSelf, PL_JUMP_SPEED);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        rv = gfmSprite_setVerticalAcceleration(player.pSelf
+                , PL_JUMP_ACCELERATION);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    }
 
     return ERR_OK;
 }
