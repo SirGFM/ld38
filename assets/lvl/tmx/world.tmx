@@ -53,7 +53,6 @@
  <objectgroup name="overworld_obj">
   <object id="1" name="locked_house" type="place" x="56" y="184" width="48" height="32"/>
   <object id="2" name="library" type="place" x="168" y="136" width="64" height="64"/>
-  <object id="3" name="locked_door" type="door" x="88" y="200" width="8" height="16"/>
   <object id="4" name="open_door" type="door" x="192" y="184" width="16" height="16">
    <properties>
     <property name="target" value="lvl/library_obj.gfm"/>

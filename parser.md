@@ -28,3 +28,7 @@ being added to anything.
 
 Only its position is used.
 
+### wall
+
+A simple hitbox that blocks advancement of entities.
+

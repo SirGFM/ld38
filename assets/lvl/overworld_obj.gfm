@@ -1,6 +1,5 @@
 area place 56 184 48 32
 area place 168 136 64 64
-area door 88 200 8 16
 obj door 192 184 16 16 [ target , lvl/library_obj.gfm ]
 area wall -8 0 8 240
 area wall 322 0 8 240
