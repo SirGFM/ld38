@@ -6,15 +6,13 @@
 #include <base/game.h>
 #include <base/input.h>
 #include <base/mainloop.h>
-
 #include <conf/state.h>
-
 #include <GFraMe/gframe.h>
 #include <GFraMe/gfmError.h>
 #include <GFraMe/gfmQuadtree.h>
-
 #include <ld38/player.h>
 #include <ld38/playstate.h>
+#include <ld38/ui.h>
 
 /** Run the main loop until the game is closed */
 err mainloop() {
@@ -24,6 +22,8 @@ err mainloop() {
     erv = player_init();
     ASSERT(erv == ERR_OK, erv);
     erv = playstate_init();
+    ASSERT(erv == ERR_OK, erv);
+    erv = ui_init();
     ASSERT(erv == ERR_OK, erv);
 
     /* Set initial state */
@@ -104,6 +104,7 @@ err mainloop() {
 
     erv = ERR_OK;
 __ret:
+    ui_clean();
     playstate_clean();
     player_clean();
 

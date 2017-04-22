@@ -11,7 +11,8 @@
 
 /** List of actions. The priority grows with the number/index. */
 enum enAction {
-    ACT_ENTER = 0
+    ACT_NONE = 0
+  , ACT_ENTER
   , ACT_MAX
 };
 typedef enum enAction action;

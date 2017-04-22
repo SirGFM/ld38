@@ -4,6 +4,7 @@
 #include <base/error.h>
 #include <base/game.h>
 #include <base/input.h>
+#include <GFraMe/gfmCamera.h>
 #include <GFraMe/gfmParser.h>
 #include <ld38/chunk.h>
 #include <ld38/event_handler.h>
@@ -11,6 +12,7 @@
 #include <ld38/level_list.h>
 #include <ld38/player.h>
 #include <ld38/playstate.h>
+#include <ld38/ui.h>
 #include <stdint.h>
 
 #define MAX_CHUNK   32
@@ -80,6 +82,7 @@ err playstate_reset() {
     playstate.pCurChunk = playstate.pWorld[levels_getMainIndex()];
 
     player_reset();
+    ui_reset();
 
     return ERR_OK;
 }
@@ -88,6 +91,8 @@ err playstate_reset() {
 err playstate_update() {
     interactable *pEvent;
     err erv;
+    gfmRV rv;
+    int cx, cy, px, py;
 
     ASSERT(game.currentState == ST_PLAYSTATE, ERR_INVALID_STATE);
     ASSERT(playstate.pCurChunk != 0, ERR_INVALID_STATE);
@@ -123,6 +128,12 @@ err playstate_update() {
         }
     }
 
+    player_getTopLeftPosition(&px, &py);
+    rv = gfmCamera_getPosition(&cx, &cy, game.pCamera);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    erv = ui_updateVerb(pEvent, px - cx, py - cy);
+    ASSERT(erv == ERR_OK, erv);
+
     return ERR_OK;
 }
 
@@ -135,6 +146,8 @@ err playstate_draw() {
     erv = chunk_draw(playstate.pCurChunk);
     ASSERT(erv == ERR_OK, erv);
     erv = player_draw();
+    ASSERT(erv == ERR_OK, erv);
+    erv = ui_draw();
     ASSERT(erv == ERR_OK, erv);
 
     return ERR_OK;

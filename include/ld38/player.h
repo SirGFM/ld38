@@ -21,5 +21,8 @@ err player_update();
 /** Draw the player */
 err player_draw();
 
+/** Retrieve the player's position */
+void player_getTopLeftPosition(int *pX, int *pY);
+
 #endif /* __PLAYER_H__ */
 

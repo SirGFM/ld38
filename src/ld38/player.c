@@ -116,3 +116,8 @@ err player_draw() {
     return ERR_OK;
 }
 
+/** Retrieve the player's position */
+void player_getTopLeftPosition(int *pX, int *pY) {
+    gfmSprite_getPosition(pX, pY, player.pSelf);
+}
+
