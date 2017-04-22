@@ -20,9 +20,10 @@ typedef struct stChunk chunk;
 /** Free all memory used by a chunk */
 void chunk_clean(chunk **ppCtx);
 
-/** Alloc and initialize a new chunk. It's initialized from the parser, which
- * must be correctly pointing to a chunk. */
-err chunk_init(chunk **ppCtx, gfmParser *pParser);
+/** Alloc and initialize a new chunk. The parser may be uninitialized, since
+ * it's recycled, but it shall not be NULL */
+err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
+        , const char *pObjects);
 
 /** Reset the chunk to its initial state */
 err chunk_reset(chunk *pCtx);

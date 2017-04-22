@@ -41,14 +41,17 @@ void chunk_clean(chunk **ppCtx) {
     *ppCtx = 0;
 }
 
-/** Alloc and initialize a new chunk. It's initialized from the parser, which
- * must be correctly pointing to a chunk. */
-err chunk_init(chunk **ppCtx, gfmParser *pParser) {
+/** Alloc and initialize a new chunk. The parser may be uninitialized, since
+ * it's recycled, but it shall not be NULL */
+err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
+        , const char *pObjects) {
     chunk *pCtx;
     gfmRV rv;
 
     ASSERT(ppCtx, ERR_ARGUMENTBAD);
     ASSERT(pParser, ERR_ARGUMENTBAD);
+    ASSERT(pTilemap, ERR_ARGUMENTBAD);
+    ASSERT(pObjects, ERR_ARGUMENTBAD);
 
     pCtx = calloc(1, sizeof(chunk));
     ASSERT(pCtx, ERR_ALLOC_FAILED);

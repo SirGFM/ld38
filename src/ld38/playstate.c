@@ -3,22 +3,22 @@
  */
 #include <base/error.h>
 #include <base/game.h>
+#include <GFraMe/gfmParser.h>
 #include <ld38/chunk.h>
+#include <ld38/level_list.h>
 #include <ld38/playstate.h>
 #include <stdint.h>
 
 #define MAX_CHUNK   32
 
-char *level_list[] = {
-    #include <auto/level_list.h>
-};
-
 struct stPlaystate {
+    /** Game's parser */
+    gfmParser *pParser;
+    /** The active chunk */
+    chunk *pCurChunk;
     /** All chunks loaded into the game. The main chunk is expected to be the
      * first one. */
     chunk *pWorld[MAX_CHUNK];
-    /** The active chunk */
-    chunk *pCurChunk;
     /** How many chunks were loaded */
     uint32_t chunkCount;
 };
@@ -28,6 +28,7 @@ static struct stPlaystate playstate = {0};
 void playstate_clean() {
     uint32_t i;
 
+    gfmParser_free(&playstate.pParser);
     /* Try to clean every chunk (should be OK even if not initialized) */
     for (i = 0; i < MAX_CHUNK; i++) {
         chunk_clean(playstate.pWorld + i);
@@ -36,6 +37,28 @@ void playstate_clean() {
 
 /** Initialize and alloc the playstate */
 err playstate_init() {
+    err erv;
+    gfmRV rv;
+    uint32_t i;
+
+    rv = gfmParser_getNew(&playstate.pParser);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    for (i = 0; i < levels_getNum(); i++) {
+        const char *pTilemap, *pObjects;
+
+        ASSERT(i < MAX_CHUNK, ERR_INVALID_INDEX);
+
+        erv = levels_getFiles(&pTilemap, &pObjects, i);
+        ASSERT(erv == ERR_OK, erv);
+        erv = chunk_init(playstate.pWorld, playstate.pParser, pTilemap
+                , pObjects);
+        ASSERT(erv == ERR_OK, erv);
+
+        rv = gfmParser_reset(playstate.pParser);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    }
+
     return ERR_OK;
 }
 

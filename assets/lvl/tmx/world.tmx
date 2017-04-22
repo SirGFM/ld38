@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="8" tileheight="8" backgroundcolor="#639bff" nextobjectid="15">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="8" tileheight="8" backgroundcolor="#639bff" nextobjectid="22">
  <tileset firstgid="1" name="atlas" tilewidth="8" tileheight="8" tilecount="1024" columns="32">
   <image source="../../gfx/atlas.bmp" trans="ff00ff" width="256" height="256"/>
   <terraintypes>
@@ -56,13 +56,17 @@
   <object id="3" name="locked_door" type="door" x="88" y="200" width="8" height="16"/>
   <object id="4" name="open_door" type="door" x="192" y="184" width="16" height="16">
    <properties>
-    <property name="target" value="library"/>
+    <property name="target" value="lvl/library_tm.gfm"/>
    </properties>
   </object>
   <object id="13" name="wall_l" type="wall" x="-8" y="0" width="8" height="240"/>
   <object id="14" name="wall_r" type="wall" x="322" y="0.666667" width="8" height="240"/>
  </objectgroup>
  <layer name="library_tm" width="40" height="30" offsetx="168" offsety="136">
+  <properties>
+   <property name="height" value="8"/>
+   <property name="width" value="7"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,103,103,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -96,14 +100,19 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="library_obj">
-  <object id="5" name="library_exit" type="door" x="192.364" y="183.909" width="16" height="16">
+ <objectgroup name="library_obj" offsetx="168" offsety="136">
+  <object id="17" name="offset" x="-168" y="-136" width="8" height="8">
+   <properties>
+    <property name="x" value=""/>
+   </properties>
+  </object>
+  <object id="18" name="library_exit" type="door" x="24.364" y="47.909" width="16" height="16">
    <properties>
     <property name="target" value="pop"/>
    </properties>
   </object>
-  <object id="8" name="wall_l" type="wall" x="168" y="144" width="8" height="64"/>
-  <object id="9" name="wall_r" type="wall" x="224" y="144" width="8" height="64"/>
-  <object id="10" name="wall_t" type="wall" x="168" y="136" width="64" height="8"/>
+  <object id="19" name="wall_l" type="wall" x="0" y="8" width="8" height="64"/>
+  <object id="20" name="wall_r" type="wall" x="56" y="8" width="8" height="64"/>
+  <object id="21" name="wall_t" type="wall" x="0" y="0" width="64" height="8"/>
  </objectgroup>
 </map>
