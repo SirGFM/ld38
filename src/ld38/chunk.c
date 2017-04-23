@@ -75,6 +75,33 @@ void chunk_clean(chunk **ppCtx) {
     *ppCtx = 0;
 }
 
+/** Retrieve the next interactable */
+static interactable* _getInteractable(chunk *pCtx) {
+    ASSERT(pCtx->interactableCount < MAX_INTERACTIBLE, 0);
+    pCtx->interactableCount++;
+    return pCtx->data + (pCtx->interactableCount - 1);
+}
+
+static err _doParseInteractable(chunk *pCtx, gfmParser *pParser
+        , interactable *pData, type t) {
+    gfmRV rv;
+    int h, w, x, y;
+
+    rv = gfmParser_getPos(&x, &y, pParser);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmParser_getDimensions(&w, &h, pParser);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    x += pCtx->x;
+    y += pCtx->y;
+    rv = gfmHitbox_initItem(pCtx->pAreas, pData, x, y, w, h, t
+            , pCtx->areaCount);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    pCtx->areaCount++;
+
+    return ERR_OK;
+}
+
 /** Alloc and initialize a new chunk. The parser may be uninitialized, since
  * it's recycled, but it shall not be NULL */
 err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
@@ -141,16 +168,10 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
         else if (strcmp(pType, "door") == 0) {
             interactable *pData;
             char *pKey, *pVal;
-            int h, num, w, x, y;
+            int num;
 
-            ASSERT(pCtx->interactableCount < MAX_INTERACTIBLE, ERR_PARSINGERR);
-
-            rv = gfmParser_getPos(&x, &y, pParser);
-            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-            rv = gfmParser_getDimensions(&w, &h, pParser);
-            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-            pData = pCtx->data + pCtx->interactableCount;
-            pCtx->interactableCount++;
+            pData = _getInteractable(pCtx);
+            ASSERT(pData, ERR_PARSINGERR);
 
             rv = gfmParser_getNumProperties(&num, pParser);
             ASSERT(rv == GFMRV_OK, ERR_GFMERR);
@@ -169,12 +190,8 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
             pData->t = T_DOOR;
             pData->verb = ACT_ENTER;
 
-            x += pCtx->x;
-            y += pCtx->y;
-            rv = gfmHitbox_initItem(pCtx->pAreas, pData, x, y, w, h, T_DOOR
-                    , pCtx->areaCount);
-            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-            pCtx->areaCount++;
+            erv =_doParseInteractable(pCtx, pParser, pData, T_DOOR);
+            ASSERT(erv == ERR_OK, erv);
         }
     }
 

@@ -11,19 +11,26 @@
 /** == LIST OF AVAILABLE STUFF AS X-MACROS ================================== */
 
 #define X_FACTS \
-    X(FACT_A, "fact_a")
+    X(LOCKED_HOUSE, "locked_house")
 
 #define X_PEOPLE \
-    X(PERSON_A, "person_a")
+    X(WEIRDO, "weirdo")
 
 #define X_ARTIFACTS \
-    X(ARTIFACT_A, "artifact_a")
+    X(GOSH, "gosh")
 
 #define LINK_ARR(...) __VA_ARGS__
 #define X_LINKS \
-    X(LINK_A, "link_a", LINK_ARR({FACT_A, 0}), LINK_ARR({PERSON_A, 0}), LINK_ARR({ARTIFACT_A, 0}))
+    X(LINK_A, "link_a", LINK_ARR({LOCKED_HOUSE, 0}), LINK_ARR({WEIRDO, 0}), LINK_ARR({GOSH, 0}))
 
 /** == ENUMERATION OF AVAILABLE STUFF ======================================= */
+
+enum enEntryType {
+    IET_FACT
+  , IET_PERSON
+  , IET_ARTIFACT
+};
+typedef enum enEntryType entryType;
 
 #define X(en, ...) en,
 
@@ -77,7 +84,7 @@ void inventory_addArtifact(artifact a);
 /** Check how many links were made */
 uint32_t invetory_getLinkPercentage();
 
-/** Reset the inventory state to its initial state */
+/** Reset the inventory state */
 err inventorystate_reset();
 
 /** Update/control the inventory state */

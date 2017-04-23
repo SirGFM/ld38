@@ -44,6 +44,7 @@ struct stInventoryState {
     artifact artifactList[NUM_ARTIFACTS];
     /** List of links made (the game's score) */
     link linkList[NUM_LINKS];
+
     /** TODO Stuff used to control the ui */
 };
 static struct stInventoryState inventory = {0};
@@ -129,7 +130,7 @@ uint32_t invetory_getLinkPercentage() {
     return  (100 * inventory.linksMade) / (NUM_LINKS - 1);
 }
 
-/** Reset the inventory state to its initial state */
+/** Reset the inventory state */
 err inventorystate_reset() {
     return ERR_OK;
 }
