@@ -11,6 +11,7 @@
 #include <ld38/ui.h>
 #include <string.h>
 
+#define MAX_TEXT_QUEUE  100
 #define TEXT_DELAY      100
 #define VERB_MAXWIDTH   12
 #define WINDOW_WIDTH    40
@@ -32,9 +33,11 @@ enum enUiFlags {
 };
 
 struct stUi {
-    /** Current text, if any */
+    /** Current text, if any (and queue of next texts) */
     gfmTilemap *pTextWindow;
     gfmText *pText;
+    char *pTextQueue[MAX_TEXT_QUEUE];
+    uint32_t lenQueue;
     /** The current verb */
     gfmText *pVerb;
     action verb;
@@ -85,6 +88,19 @@ void ui_reset() {
     ui.flags = 0;
 }
 
+/** Remove a single entry from the queue. Return whether there was another entry
+ * or not. */
+static uint32_t _ui_popQueue() {
+    if (ui.lenQueue == 0) {
+        return 0;
+    }
+
+    ui.lenQueue--;
+    ui_setTextWindow(ui.pTextQueue[ui.lenQueue]);
+
+    return 1;
+}
+
 /** Check whether text is currently active. Return 1 on true */
 uint32_t ui_isTextActive() {
     gfmRV rv;
@@ -97,8 +113,10 @@ uint32_t ui_isTextActive() {
     //ASSERT(rv == GFMRV_OK, 0);
     if (DID_JUST_PRESS(action)) {
         if (gfmText_didFinish(ui.pText) == GFMRV_TRUE) {
-            ui.flags &= ~UI_WINDOW_VISIBLE;
-            return 0;
+            /* Try to unqueue a text and finish */
+            if (!_ui_popQueue()) {
+                ui.flags &= ~UI_WINDOW_VISIBLE;
+            }
         }
         else {
             rv = gfmText_forceFinish(ui.pText);
@@ -107,6 +125,27 @@ uint32_t ui_isTextActive() {
     }
 
     return 1;
+}
+
+/** Enqueue texts */
+err ui_queueText(char **ppText, uint32_t num) {
+    uint32_t i;
+
+    ASSERT(num < MAX_TEXT_QUEUE, ERR_ARGUMENTBAD);
+
+    /** Enqueue them in reverse order so it's easier to recover the last */
+    memset(ui.pTextQueue, 0x0, sizeof(char*) * MAX_TEXT_QUEUE);
+    for (i = 0; i < num; i++) {
+        ui.pTextQueue[num - i - 1] = ppText[i];
+    }
+
+    ui.lenQueue = num;
+
+    if (!(ui.flags & UI_WINDOW_VISIBLE)) {
+        _ui_popQueue();
+    }
+
+    return ERR_OK;
 }
 
 /** Display a new text into the window */

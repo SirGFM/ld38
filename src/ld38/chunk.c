@@ -16,6 +16,7 @@
 #include <GFraMe/gfmTilemap.h>
 #include <ld38/chunk.h>
 #include <ld38/interactable.h>
+#include <ld38/inventory.h>
 #include <ld38/level_list.h>
 #include <stdlib.h>
 #include <string.h>
@@ -99,6 +100,63 @@ static interactable* _getInteractable(chunk *pCtx) {
     return pCtx->data + (pCtx->interactableCount - 1);
 }
 
+/** Parser everything common to inventory entries */
+static err _doParseInventoryEntry(gfmParser *pParser, interactable *pData
+        , type t) {
+    struct stInventoryEntry *pEntry;
+    gfmRV rv;
+    int num, i;
+
+    pEntry = &pData->data.inventoryEntry;
+
+    rv = gfmParser_getNumProperties(&num, pParser);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    pEntry->numFlavors = 0;
+    pEntry->ppFlavor = 0;
+    for (i = 0; i < num; i++) {
+        char *pKey, *pVal;
+
+        rv = gfmParser_getProperty(&pKey, &pVal, pParser, i);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+        if (memcmp(pKey, "id", sizeof("id")) == 0) {
+            switch (t) {
+                case T_FACT: {
+                    pEntry->value = (uint32_t)inventory_getFact(pVal);
+                } break;
+                case T_PERSON: {
+                    pEntry->value = (uint32_t)inventory_getPerson(pVal);
+                } break;
+                case T_ARTIFACT: {
+                    pEntry->value = (uint32_t)inventory_getArtifact(pVal);
+                } break;
+                default: {
+                    ASSERT(0, ERR_ARGUMENTBAD);
+                }
+            }
+            ASSERT(pEntry->value != 0, ERR_ITEM_NOT_FOUND);
+        }
+        else if (memcmp(pKey, "flavor", sizeof("flavor") - 1) == 0) {
+            size_t len;
+
+            pEntry->ppFlavor = realloc(pEntry->ppFlavor
+                    , (pEntry->numFlavors + 1) * sizeof(char*));
+            ASSERT(pEntry->ppFlavor, ERR_ALLOC_FAILED);
+
+            len = strlen(pVal) + 1;
+            pEntry->ppFlavor[pEntry->numFlavors]= malloc(len * sizeof(char));
+            ASSERT(pEntry->ppFlavor[pEntry->numFlavors], ERR_ALLOC_FAILED);
+            memcpy(pEntry->ppFlavor[pEntry->numFlavors], pVal, len);
+
+            pEntry->numFlavors++;
+        }
+    }
+
+    return ERR_OK;
+}
+
+/** Finish parsing an interactable and add it to the chunk */
 static err _doParseInteractable(chunk *pCtx, gfmParser *pParser
         , interactable *pData, type t) {
     gfmRV rv;
@@ -210,6 +268,52 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
             erv =_doParseInteractable(pCtx, pParser, pData, T_DOOR);
             ASSERT(erv == ERR_OK, erv);
         }
+        else if (strcmp(pType, "fact") == 0) {
+            interactable *pData;
+
+            pData = _getInteractable(pCtx);
+            ASSERT(pData, ERR_PARSINGERR);
+
+            pData->t = T_FACT;
+            pData->verb = ACT_INSPECT;
+
+            erv = _doParseInventoryEntry(pParser, pData, T_FACT);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+            erv =_doParseInteractable(pCtx, pParser, pData, T_FACT);
+            ASSERT(erv == ERR_OK, erv);
+        }
+        else if (strcmp(pType, "artifact") == 0) {
+            interactable *pData;
+
+            pData = _getInteractable(pCtx);
+            ASSERT(pData, ERR_PARSINGERR);
+
+            pData->t = T_ARTIFACT;
+            pData->verb = ACT_INSPECT;
+
+            erv = _doParseInventoryEntry(pParser, pData, T_ARTIFACT);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+            erv =_doParseInteractable(pCtx, pParser, pData, T_ARTIFACT);
+            ASSERT(erv == ERR_OK, erv);
+        }
+#if 0
+        else if (strcmp(pType, "person") == 0) {
+            interactable *pData;
+            char *pKey, *pVal;
+            int num;
+
+            pData = _getInteractable(pCtx);
+            ASSERT(pData, ERR_PARSINGERR);
+
+            rv = gfmParser_getNumProperties(&num, pParser);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+            erv = _doParseInventoryEntry(pParser, pData, T_PERSON);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+            erv =_doParseInteractable(pCtx, pParser, pData, T_PERSON);
+            ASSERT(erv == ERR_OK, erv);
+        }
+#endif
     }
 
     len = (int)strlen(pTilemap);

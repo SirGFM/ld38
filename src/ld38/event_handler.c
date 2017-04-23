@@ -16,7 +16,6 @@ void eventHandler_unqueue() {
 void eventHandler_queue(interactable *pEvent) {
     if (_pEvent == 0 || _pEvent->verb < pEvent->verb) {
         _pEvent = pEvent;
-        /** TODO Re-draw the current verb on the UI */
     }
 }
 

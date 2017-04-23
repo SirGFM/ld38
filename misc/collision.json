@@ -14,14 +14,14 @@
         ]
     },
     "interactable": {
-        "type_a": ["T_INTERACTABLE", "T_DOOR"],
+        "type_a": ["T_INTERACTABLE", "T_DOOR", "T_FACT", "T_ARTIFACT", "T_PERSON"],
         "cases": [
             {
                 "type_b": ["T_PLAYER"],
                 "function": "_onInteract"
             },
             {
-                "type_b": ["T_FLOOR", "T_WALL", "T_INTERACTABLE", "T_DOOR"],
+                "type_b": ["T_FLOOR", "T_WALL", "T_INTERACTABLE", "T_DOOR", "T_FACT", "T_ARTIFACT", "T_PERSON"],
                 "function": null,
                 "auto_swap": false
             }

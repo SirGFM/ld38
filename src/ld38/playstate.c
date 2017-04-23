@@ -9,6 +9,7 @@
 #include <ld38/chunk.h>
 #include <ld38/event_handler.h>
 #include <ld38/interactable.h>
+#include <ld38/inventory.h>
 #include <ld38/level_list.h>
 #include <ld38/player.h>
 #include <ld38/playstate.h>
@@ -111,6 +112,23 @@ err playstate_update() {
     pEvent = eventHandler_getQueued();
     if (pEvent != 0 && DID_JUST_PRESS(action)) {
         switch (pEvent->verb) {
+            case ACT_INSPECT: {
+                if (pEvent->t == T_FACT) {
+                    inventory_addFact(pEvent->data.inventoryEntry.value);
+                }
+                else if (pEvent->t == T_ARTIFACT) {
+                    inventory_addArtifact(pEvent->data.inventoryEntry.value);
+                }
+                erv = ui_queueText(pEvent->data.inventoryEntry.ppFlavor
+                        , pEvent->data.inventoryEntry.numFlavors);
+                ASSERT(erv == ERR_OK, erv);
+            } break;
+            case ACT_TALK: {
+                inventory_addPerson(pEvent->data.inventoryEntry.value);
+                erv = ui_queueText(pEvent->data.inventoryEntry.ppFlavor
+                        , pEvent->data.inventoryEntry.numFlavors);
+                ASSERT(erv == ERR_OK, erv);
+            } break;
             case ACT_ENTER: {
                 chunk *pNext;
 

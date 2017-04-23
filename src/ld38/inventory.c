@@ -26,8 +26,11 @@ struct stLinkReq {
   static artifact __ ## en ## __artifacts[] = artifacts;
     X_LINKS
 #undef X
+static fact __LINK_ZERO__facts[] = { FACT_ZERO };
+static person __LINK_ZERO__people[] = { PERSON_ZERO };
+static artifact __LINK_ZERO__artifacts[] = { ARTIFACT_ZERO };
 static struct stLinkReq _linkRequirements[NUM_LINKS] = {
-    [LINK_ZERO] = { 0, 0, 0},
+    [LINK_ZERO] = { __LINK_ZERO__facts, __LINK_ZERO__people, __LINK_ZERO__artifacts },
 #define X(en, name, ...) \
   [en] = { .factList = __ ## en ## __facts, \
       .peopleList = __ ## en ## __people, \

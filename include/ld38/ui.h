@@ -19,6 +19,9 @@ void ui_reset();
 /** Check whether text is currently active. Return 1 on true */
 uint32_t ui_isTextActive();
 
+/** Enqueue texts */
+err ui_queueText(char **ppText, uint32_t num);
+
 /** Display a new text into the window */
 err ui_setTextWindow(char *pText);
 
