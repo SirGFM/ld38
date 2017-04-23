@@ -16,6 +16,12 @@ void ui_clean();
 /** Reset the UI */
 void ui_reset();
 
+/** Check whether text is currently active. Return 1 on true */
+uint32_t ui_isTextActive();
+
+/** Display a new text into the window */
+err ui_setTextWindow(char *pText);
+
 /** Update the current verb. Position must be in screen-space! */
 err ui_updateVerb(interactable *pEvent, int x, int y);
 

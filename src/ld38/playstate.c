@@ -97,6 +97,11 @@ err playstate_update() {
     ASSERT(game.currentState == ST_PLAYSTATE, ERR_INVALID_STATE);
     ASSERT(playstate.pCurChunk != 0, ERR_INVALID_STATE);
 
+    /** Text takes control over the game */
+    if (ui_isTextActive()) {
+        return ERR_OK;
+    }
+
     eventHandler_unqueue();
     erv = chunk_update(playstate.pCurChunk);
     ASSERT(erv == ERR_OK, erv);
