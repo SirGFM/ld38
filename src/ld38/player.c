@@ -12,15 +12,32 @@
 #include <GFraMe/gfmSprite.h>
 #include <ld38/entity_macros.h>
 #include <ld38/player.h>
+#include <stdint.h>
 
 /** TODO ADJUST */
-#define PL_SPEED                TILES_TO_PX(5)
+#define PL_SPEED                TILES_TO_PX(7)
 #define PL_JUMP_SPEED           JUMP_SPEED(25, 3)
 #define PL_JUMP_ACCELERATION    JUMP_ACCELERATION(25, 3)
 #define PL_FALL_ACCELERATION    JUMP_ACCELERATION(18, 3)
 
+enum enPlayerAnim {
+    PL_STAND = 0
+  , PL_WALK
+  , PL_JUMP
+  , PL_ANIM_COUNT
+};
+typedef enum enPlayerAnim playerAnim;
+
+static int _playerAnimData[] = {
+             /* len | fps | loop | frames */
+/* PL_STAND */   1  ,  0  ,  0   , 48
+/* PL_WALK  */,  4  ,  10 ,  1   , 49,50,51,52
+/* PL_JUMP  */,  1  ,  0  ,  0   , 51
+};
+
 struct stPlayer {
     gfmSprite *pSelf;
+    uint32_t justJumped;
 };
 
 static struct stPlayer player = {0};
@@ -31,13 +48,15 @@ err player_init() {
 
     rv = gfmSprite_getNew(&player.pSelf);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-    rv = gfmSprite_init(player.pSelf, 0/*x*/, 0/*y*/, 6/*width*/, 8/*height*/
-            , gfx.pSset8x8, -2/*offX*/, 0/*offY*/, &player, T_PLAYER);
+    rv = gfmSprite_init(player.pSelf, 0/*x*/, 0/*y*/, 6/*width*/, 12/*height*/
+            , gfx.pSset16x16, -5/*offX*/, 0/*offY*/, &player, T_PLAYER);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
     rv = gfmSprite_setVerticalAcceleration(player.pSelf, PL_FALL_ACCELERATION);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-    /* TODO Load animations */
-    rv = gfmSprite_setFrame(player.pSelf, 108);
+
+    rv = gfmSprite_addAnimationsStatic(player.pSelf, _playerAnimData);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmSprite_playAnimation(player.pSelf, PL_STAND);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
     return ERR_OK;
@@ -61,11 +80,17 @@ err player_update() {
     gfmRV rv;
     gfmCollision dir;
 
+    player.justJumped = 0;
+
     if (IS_PRESSED(right)) {
         vx = PL_SPEED;
+        rv = gfmSprite_setDirection(player.pSelf, 0);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
     }
     else if (IS_PRESSED(left)) {
         vx = -PL_SPEED;
+        rv = gfmSprite_setDirection(player.pSelf, 1);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
     }
     else {
         vx = 0;
@@ -101,7 +126,27 @@ err player_update() {
 
 /** Draw the player */
 err player_draw() {
+    double vx;
     gfmRV rv;
+    gfmCollision dir;
+
+    rv = gfmSprite_getCollision(&dir, player.pSelf);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    if (!player.justJumped && (dir & gfmCollision_down)) {
+        rv = gfmSprite_getHorizontalVelocity(&vx, player.pSelf);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+        if (vx != 0) {
+            rv = gfmSprite_playAnimation(player.pSelf, PL_WALK);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        }
+        else {
+            rv = gfmSprite_playAnimation(player.pSelf, PL_STAND);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+            rv = gfmSprite_resetAnimation(player.pSelf);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        }
+    }
 
     rv = gfmSprite_draw(player.pSelf, game.pCtx);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
@@ -122,6 +167,13 @@ err player_tryJump() {
         rv = gfmSprite_setVerticalAcceleration(player.pSelf
                 , PL_JUMP_ACCELERATION);
         ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+        rv = gfmSprite_playAnimation(player.pSelf, PL_JUMP);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        rv = gfmSprite_resetAnimation(player.pSelf);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+        player.justJumped = 1;
     }
 
     return ERR_OK;

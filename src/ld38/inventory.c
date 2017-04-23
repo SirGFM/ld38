@@ -10,6 +10,7 @@
 #include <GFraMe/gfmTilemap.h>
 #include <GFraMe/gfmText.h>
 #include <ld38/inventory.h>
+#include <ld38/ui.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -93,6 +94,7 @@ static void inventory_checkLinks() {
         if (_hasFacts(i) && _hasPeople(i) && _hasArtifacts(i)) {
             inventory.linkList[i] = 1;
             inventory.linksMade++;
+            /* TODO Queue message */
         }
     }
 }
