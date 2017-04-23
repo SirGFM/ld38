@@ -9,8 +9,8 @@
 
 /** == LIST OF AVAILABLE STUFF AS X-MACROS ================================== */
 
-#define X_INFORMATIONS \
-    X(INFO_A, "info_a")
+#define X_FACTS \
+    X(FACT_A, "fact_a")
 
 #define X_PEOPLE \
     X(PERSON_A, "person_a")
@@ -22,10 +22,10 @@
 
 #define X(en, ...) en,
 
-enum enInformation {
-    X_INFORMATIONS
+enum enFact {
+    X_FACTS
 };
-typedef enum enInformation information;
+typedef enum enFact fact;
 
 enum enPerson {
     X_PEOPLE
@@ -50,8 +50,8 @@ void inventory_clean();
 /** Reset the inventory to its original state */
 void inventory_reset();
 
-/** Add an information to the inventory */
-void inventory_addInformation(information info);
+/** Add a fact to the inventory */
+void inventory_addFact(fact f);
 
 /** Add a person to the inventory */
 void inventory_addPerson(person p);
