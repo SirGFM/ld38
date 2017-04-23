@@ -81,6 +81,7 @@ err playstate_reset() {
         ASSERT(erv == ERR_OK, erv);
     }
     playstate.pCurChunk = playstate.pWorld[levels_getMainIndex()];
+    chunk_configureCamera(playstate.pCurChunk);
 
     player_reset();
     ui_reset();

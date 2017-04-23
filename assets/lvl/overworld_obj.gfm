@@ -1,2 +1,3 @@
 obj fact 168 147 80 40 [ flavor-0 , "THIS IS MY HOUSE" ] [ flavor-1 , "NOTHING SPECIAL ABOUT IT. JUST A REGULAR HOUSE..." ] [ id , my_house ]
 obj door 202 167 20 20 [ target , lvl/my_house_obj.gfm ]
+area wall -32 0 32 296

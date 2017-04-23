@@ -121,6 +121,13 @@ err player_update() {
     }
     ASSERT(rv == GFMRV_QUADTREE_DONE, ERR_GFMERR);
 
+    do {
+        int x, y;
+
+        gfmSprite_getCenter(&x, &y, player.pSelf);
+        gfmCamera_centerAtPoint(game.pCamera, x, y);
+    } while (0);
+
     return ERR_OK;
 }
 

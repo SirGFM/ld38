@@ -12,6 +12,7 @@
 #include <GFraMe/gfmHitbox.h>
 #include <GFraMe/gfmObject.h>
 #include <GFraMe/gfmParser.h>
+#include <GFraMe/gfmSprite.h>
 #include <GFraMe/gfmQuadtree.h>
 #include <GFraMe/gfmTilemap.h>
 #include <ld38/chunk.h>
@@ -23,6 +24,7 @@
 
 #define MAX_HITBOX          128
 #define MAX_INTERACTIBLE    64
+#define MAX_SPRITES         32
 #define TM_DEFAULT_WIDTH    40
 #define TM_DEFAULT_HEIGHT   30
 #define TM_DEFAULT_TILE     -1
@@ -46,6 +48,8 @@ struct stChunk {
     chunk *pParent;
     /** Areas with collision */
     gfmHitbox *pAreas;
+    /** Sprites */
+    gfmSprite *ppSprites[MAX_SPRITES];
     /** Number of areas used */
     uint32_t areaCount;
     /** Number of interactables used */
@@ -87,6 +91,10 @@ void chunk_clean(chunk **ppCtx) {
             free(pData->data.inventoryEntry.ppFlavor[j]);
         }
         free(pData->data.inventoryEntry.ppFlavor);
+    }
+
+    for (i = 0; i < MAX_SPRITES; i++) {
+        gfmSprite_free(&pCtx->ppSprites[i]);
     }
 
     free(*ppCtx);
@@ -173,6 +181,60 @@ static err _doParseInteractable(chunk *pCtx, gfmParser *pParser
             , pCtx->areaCount);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
     pCtx->areaCount++;
+
+    return ERR_OK;
+}
+
+/** Finish parsing a visible interactable and add it to the chunk */
+static err _doParseSprite(chunk *pCtx, gfmParser *pParser, interactable *pData
+        , type t) {
+    gfmSprite *pSpr;
+    gfmRV rv;
+    int frame, h, i, num, w, x, y;
+
+    rv = gfmParser_getPos(&x, &y, pParser);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmParser_getDimensions(&w, &h, pParser);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    frame = -1;
+    rv = gfmParser_getNumProperties(&num, pParser);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    for (i = 0; i < num; i++) {
+        char *pKey, *pVal;
+
+        rv = gfmParser_getProperty(&pKey, &pVal, pParser, i);
+        ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+        if (memcmp(pKey, "frame", sizeof("frame")) == 0) {
+
+            frame = 0;
+            while (*pVal) {
+                frame = frame * 10 + (*pVal - '0');
+                pVal++;
+            }
+        }
+    }
+    ASSERT(frame > 0, ERR_MISSINGPARAM);
+
+    pSpr = 0;
+    for (i = 0; i < MAX_SPRITES; i++) {
+        if (!(pCtx->ppSprites[i])) {
+            rv = gfmSprite_getNew(&pCtx->ppSprites[i]);
+            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+            pSpr = pCtx->ppSprites[i];
+            break;
+        }
+    }
+    ASSERT(pSpr, ERR_ALLOC_FAILED);
+
+    x += pCtx->x;
+    y += pCtx->y;
+    rv = gfmSprite_init(pSpr, x, y, 8/*width*/, 20/*height*/
+            , gfx.pSset16x16, -6/*offX*/, 0/*offY*/, &pData, t);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    rv = gfmSprite_setFrame(pSpr, frame);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
     return ERR_OK;
 }
@@ -293,27 +355,23 @@ err chunk_init(chunk **ppCtx, gfmParser *pParser, const char *pTilemap
 
             erv = _doParseInventoryEntry(pParser, pData, T_ARTIFACT);
             ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-            erv =_doParseInteractable(pCtx, pParser, pData, T_ARTIFACT);
+            erv = _doParseSprite(pCtx, pParser, pData, T_ARTIFACT);
             ASSERT(erv == ERR_OK, erv);
         }
-#if 0
         else if (strcmp(pType, "person") == 0) {
             interactable *pData;
-            char *pKey, *pVal;
-            int num;
 
             pData = _getInteractable(pCtx);
             ASSERT(pData, ERR_PARSINGERR);
 
-            rv = gfmParser_getNumProperties(&num, pParser);
-            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+            pData->t = T_PERSON;
+            pData->verb = ACT_TALK;
 
             erv = _doParseInventoryEntry(pParser, pData, T_PERSON);
             ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-            erv =_doParseInteractable(pCtx, pParser, pData, T_PERSON);
+            erv = _doParseSprite(pCtx, pParser, pData, T_PERSON);
             ASSERT(erv == ERR_OK, erv);
         }
-#endif
     }
 
     len = (int)strlen(pTilemap);
@@ -374,6 +432,12 @@ chunk* chunk_popParent(chunk *pCtx) {
     pCtx->pParent = 0;
 
     return pTmp;
+}
+
+/** Configure the camera to this chunk */
+void chunk_configureCamera(chunk *pCtx) {
+    gfmCamera_setWorldDimensions(game.pCamera, pCtx->height, pCtx->width);
+    gfmCamera_setDeadzone(game.pCamera, (320 - 60) / 2, 160, 60/*width*/, 20 /*height*/);
 }
 
 /** Update the chunk and load this frame's collision information */

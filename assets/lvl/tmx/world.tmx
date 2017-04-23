@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="400" height="300" tilewidth="8" tileheight="8" backgroundcolor="#639bff" nextobjectid="40">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="400" height="300" tilewidth="8" tileheight="8" backgroundcolor="#639bff" nextobjectid="41">
  <tileset firstgid="1" name="atlas" tilewidth="8" tileheight="8" tilecount="1024" columns="32">
   <image source="../../gfx/atlas.bmp" trans="ff00ff" width="256" height="256"/>
   <terraintypes>
@@ -82,6 +82,9 @@
   <tile id="1019" terrain="0,0,0,0"/>
   <tile id="1020" terrain="0,0,0,0"/>
   <tile id="1021" terrain="0,0,0,0"/>
+ </tileset>
+ <tileset firstgid="1025" name="atlas 16x16" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <image source="../../gfx/atlas.bmp" trans="ff00ff" width="256" height="256"/>
  </tileset>
  <layer name="old_overworld_tm" width="400" height="300" visible="0">
   <properties>
@@ -1055,6 +1058,7 @@
     <property name="target" value="lvl/my_house_obj.gfm"/>
    </properties>
   </object>
+  <object id="40" name="wall" type="wall" x="-32" y="0" width="32" height="296"/>
  </objectgroup>
  <layer name="my_house_tm" width="400" height="300" offsetx="168" offsety="144">
   <data encoding="csv">

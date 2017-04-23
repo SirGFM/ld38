@@ -34,6 +34,9 @@ chunk* chunk_pushParent(chunk *pSelf, chunk *pParent);
 /** Pop a chunk */
 chunk* chunk_popParent(chunk *pCtx);
 
+/** Configure the camera to this chunk */
+void chunk_configureCamera(chunk *pCtx);
+
 /** Update the chunk and load this frame's collision information */
 err chunk_update(chunk *pCtx);
 
