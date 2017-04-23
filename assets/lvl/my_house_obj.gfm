@@ -1,0 +1,4 @@
+area offset -168 -144 8 8
+area wall -6 -8 8 64
+area wall 78 -8 8 64
+obj door 34 23 20 20 [ target , pop ]

@@ -11,6 +11,7 @@
 /** == LIST OF AVAILABLE STUFF AS X-MACROS ================================== */
 
 #define X_FACTS \
+    X(MY_HOUSE, "my_house") \
     X(LOCKED_HOUSE, "locked_house")
 
 #define X_PEOPLE \

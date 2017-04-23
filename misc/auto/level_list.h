@@ -1,4 +1,6 @@
 "lvl/library_obj.gfm",
 "lvl/library_tm.gfm",
+"lvl/my_house_obj.gfm",
+"lvl/my_house_tm.gfm",
 "lvl/overworld_obj.gfm",
 "lvl/overworld_tm.gfm",
