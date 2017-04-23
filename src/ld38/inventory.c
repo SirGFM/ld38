@@ -10,8 +10,34 @@
 #include <GFraMe/gfmTilemap.h>
 #include <GFraMe/gfmText.h>
 #include <ld38/inventory.h>
+#include <stdint.h>
+
+/** Store the requirements within the program */
+struct stLinkReq {
+    fact *factList;
+    person *peopleList;
+    artifact *artifactList;
+};
+/** Sorry, I'm not sorry... macros are a fun source of headaches =D */
+#define X(en, name, facts, people, artifacts) \
+  static fact __ ## en ## __facts[] = facts; \
+  static person __ ## en ## __people[] = people; \
+  static artifact __ ## en ## __artifacts[] = artifacts;
+    X_LINKS
+#undef X
+static struct stLinkReq _linkRequirements[NUM_LINKS] = {
+    [LINK_ZERO] = { 0, 0, 0},
+#define X(en, name, ...) \
+  [en] = { .factList = __ ## en ## __facts, \
+      .peopleList = __ ## en ## __people, \
+      .artifactList = __ ## en ## __artifacts},
+    X_LINKS
+#undef X
+};
 
 struct stInventoryState {
+    /* How many links were made */
+    uint32_t linksMade;
     /** List of things found by the player */
     fact factList[NUM_FACTS];
     person peopleList[NUM_PEOPLE];
@@ -31,20 +57,77 @@ err inventory_init() {
 void inventory_clean() {
 }
 
+/** Check if a list has all the listed entries */
+#define HASFUNC(fname, list) \
+    static uint32_t fname(uint32_t entry) { \
+        struct stLinkReq *req; \
+        uint32_t i; \
+        req = _linkRequirements + entry; \
+        for (i = 0; req->list[i] != 0; i++) { \
+            if (!inventory.list[req->list[i]]) { \
+                return 0; \
+            } \
+        } \
+        return 1; \
+    }
+HASFUNC(_hasFacts, factList)
+HASFUNC(_hasPeople, peopleList)
+HASFUNC(_hasArtifacts, artifactList)
+#undef HASFUNC
+
 /** Check if any new link was made */
 static void inventory_checkLinks() {
+    uint32_t i;
+
+    for (i = 0; i < NUM_LINKS; i++) {
+        /** Check if the link was already made */
+        if (inventory.linkList[i]) {
+            continue;
+        }
+
+        if (_hasFacts(i) && _hasPeople(i) && _hasArtifacts(i)) {
+            inventory.linkList[i] = 1;
+            inventory.linksMade++;
+        }
+    }
 }
 
 /** Add a fact to the inventory */
 void inventory_addFact(fact f) {
+    /** Check if entry has already been set */
+    if (inventory.factList[f]) {
+        return;
+    }
+
+    inventory.factList[f] = 1;
     inventory_checkLinks();
 }
 
 /** Add a person to the inventory */
-void inventory_addPerson(person p);
+void inventory_addPerson(person p) {
+    /** Check if entry has already been set */
+    if (inventory.peopleList[p]) {
+        return;
+    }
+
+    inventory_checkLinks();
+}
 
 /** Add an artifact to the inventory */
-void inventory_addArtifact(artifact a);
+void inventory_addArtifact(artifact a) {
+    /** Check if entry has already been set */
+    if (inventory.artifactList[a]) {
+        return;
+    }
+
+    inventory.artifactList[a] = 1;
+    inventory_checkLinks();
+}
+
+/** Check how many links were made */
+uint32_t invetory_getLinkPercentage() {
+    return  (100 * inventory.linksMade) / (NUM_LINKS - 1);
+}
 
 /** Reset the inventory state to its initial state */
 err inventorystate_reset() {

@@ -6,6 +6,7 @@
 #define __INVENTORY_H__
 
 #include <base/error.h>
+#include <stdint.h>
 
 /** == LIST OF AVAILABLE STUFF AS X-MACROS ================================== */
 
@@ -18,34 +19,37 @@
 #define X_ARTIFACTS \
     X(ARTIFACT_A, "artifact_a")
 
-/* TODO User var args or something to allow setting the required list within the
- * macro itself */
+#define LINK_ARR(...) __VA_ARGS__
 #define X_LINKS \
-    X(LINK_A, "link_a")
+    X(LINK_A, "link_a", LINK_ARR({FACT_A, 0}), LINK_ARR({PERSON_A, 0}), LINK_ARR({ARTIFACT_A, 0}))
 
 /** == ENUMERATION OF AVAILABLE STUFF ======================================= */
 
 #define X(en, ...) en,
 
 enum enFact {
+    FACT_ZERO = 0,
     X_FACTS
     NUM_FACTS
 };
 typedef enum enFact fact;
 
 enum enPerson {
+    PERSON_ZERO = 0,
     X_PEOPLE
     NUM_PEOPLE
 };
 typedef enum enPerson person;
 
 enum enArtifact {
+    ARTIFACT_ZERO = 0,
     X_ARTIFACTS
     NUM_ARTIFACTS
 };
 typedef enum enArtifact artifact;
 
 enum enLink {
+    LINK_ZERO = 0,
     X_LINKS
     NUM_LINKS
 };
@@ -69,6 +73,9 @@ void inventory_addPerson(person p);
 
 /** Add an artifact to the inventory */
 void inventory_addArtifact(artifact a);
+
+/** Check how many links were made */
+uint32_t invetory_getLinkPercentage();
 
 /** Reset the inventory state to its initial state */
 err inventorystate_reset();
