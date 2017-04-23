@@ -432,7 +432,7 @@ chunk* chunk_popParent(chunk *pCtx) {
 
 /** Configure the camera to this chunk */
 void chunk_configureCamera(chunk *pCtx) {
-    gfmCamera_setWorldDimensions(game.pCamera, pCtx->height, pCtx->width);
+    gfmCamera_setWorldDimensions(game.pCamera, pCtx->width, pCtx->height);
     gfmCamera_setDeadzone(game.pCamera, (320 - 60) / 2, 160, 60/*width*/, 20 /*height*/);
 }
 
