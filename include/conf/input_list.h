@@ -52,6 +52,8 @@
         , gfmController_right \
         , 0/*port*/) \
   X_KEY(action \
+        , gfmKey_return) \
+  X_KEY(action \
         , gfmKey_x) \
   X_KEY(left \
         , gfmKey_w) \
