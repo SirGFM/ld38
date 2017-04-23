@@ -28,8 +28,23 @@ struct stPlaystate {
     chunk *pWorld[MAX_CHUNK];
     /** How many chunks were loaded */
     uint32_t chunkCount;
+    /** Store which links the player has made */
+    link links[NUM_LINKS];
 };
 static struct stPlaystate playstate = {0};
+
+static char *pWinText[] = {
+    "WHO WOULD HAVE THOUGHT THAT THEY LIVE SO CLOSE TO ME!?",
+    "NOW I REALLY WANT TO GO TO THE EXIHIBIT AND MEET THEM...",
+    "THIS IS SUCH A SMALL WORLD, AFTER ALL.",
+    "WHO KNOWS WHAT ELSE I'LL FIND OUT AT EXIHIBIT?",
+    "...",
+    "(HELLO, IT'S THE DEV! UNFORTUNATELLY, THIS IS AS FAR AS THE GAME GOES...",
+    "I DECIDED TO CUT IT SHORT BUT TRY TO PROPERLY FINISH IT...",
+    "I HOPE YOU AT LEAST ENJOYED THE IDEA. :D",
+    "THANKS FOR PLAYING!!)"
+};
+static uint32_t winTextCount = 9;
 
 /** Free all memory used by the playstate */
 void playstate_clean() {
@@ -95,6 +110,7 @@ err playstate_update() {
     err erv;
     gfmRV rv;
     int cx, cy, px, py;
+    link i;
 
     ASSERT(game.currentState == ST_PLAYSTATE, ERR_INVALID_STATE);
     ASSERT(playstate.pCurChunk != 0, ERR_INVALID_STATE);
@@ -102,6 +118,24 @@ err playstate_update() {
     /** Text takes control over the game */
     if (ui_isTextActive()) {
         return ERR_OK;
+    }
+
+    /** Check if any new link was made */
+    for (i = 0; i < NUM_LINKS; i++) {
+        if (!playstate.links[i] && inventory_checkLink(i)) {
+            playstate.links[i] = 1;
+            switch (i) {
+                case 0: {
+                    /* IGNORE */
+                } break;
+                case LINK_A: {
+                    ui_queueText(pWinText, winTextCount);
+                } break;
+                default: {
+                    ASSERT(0, ERR_INVALID_INDEX);
+                }
+            }
+        }
     }
 
     eventHandler_unqueue();

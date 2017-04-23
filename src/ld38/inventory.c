@@ -117,6 +117,7 @@ void inventory_addPerson(person p) {
         return;
     }
 
+    inventory.peopleList[p] = 1;
     inventory_checkLinks();
 }
 
@@ -163,6 +164,12 @@ artifact inventory_getArtifact(char *pId) {
 }
 
 #undef X
+
+/** Check if a given link was made */
+uint32_t inventory_checkLink(link index) {
+    ASSERT(index < NUM_LINKS, 0);
+    return inventory.linkList[index];
+}
 
 /** Reset the inventory state */
 err inventorystate_reset() {

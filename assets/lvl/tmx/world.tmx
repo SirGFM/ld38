@@ -15,6 +15,10 @@
   <tile id="128" terrain="0,0,0,0"/>
   <tile id="129" terrain="0,0,0,0"/>
   <tile id="130" terrain="0,0,0,0"/>
+  <tile id="793" terrain="0,0,0,0"/>
+  <tile id="795" terrain="0,0,0,0"/>
+  <tile id="797" terrain="0,0,0,0"/>
+  <tile id="798" terrain="0,0,0,0"/>
   <tile id="841" terrain="0,0,0,0"/>
   <tile id="842" terrain="0,0,0,0"/>
   <tile id="844" terrain="0,0,0,0"/>

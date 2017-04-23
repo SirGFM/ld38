@@ -24,7 +24,7 @@
 
 #define LINK_ARR(...) __VA_ARGS__
 #define X_LINKS \
-    X(LINK_A, "link_a", LINK_ARR({WOODCARVER_HOUSE, 0}), LINK_ARR({PAINTER, 0}), LINK_ARR({DOG_STATUE, BIRD_STATUE, 0}))
+    X(LINK_A, "link_a", LINK_ARR({WOODCARVER_HOUSE, UNFINISHED_WOOD, 0}), LINK_ARR({PAINTER, 0}), LINK_ARR({DOG_STATUE, BIRD_STATUE, 0}))
 
 /** == ENUMERATION OF AVAILABLE STUFF ======================================= */
 
@@ -88,6 +88,9 @@ person inventory_getPerson(char *pId);
 
 /** Look-up an artifact from its identifier */
 artifact inventory_getArtifact(char *pId);
+
+/** Check if a given link was made */
+uint32_t inventory_checkLink(link index);
 
 /** Reset the inventory state */
 err inventorystate_reset();
