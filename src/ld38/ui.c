@@ -227,6 +227,10 @@ err ui_draw() {
         ASSERT(rv == GFMRV_OK, ERR_GFMERR);
     }
     if (ui.flags & UI_WINDOW_VISIBLE) {
+        int x, y;
+
+        gfmCamera_getPosition(&x, &y, game.pCamera);
+        gfmTilemap_setPosition(ui.pTextWindow, x, y);
         rv = gfmTilemap_draw(ui.pTextWindow, game.pCtx);
         ASSERT(rv == GFMRV_OK, ERR_GFMERR);
         rv = gfmText_draw(ui.pText, game.pCtx);
