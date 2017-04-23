@@ -15,7 +15,7 @@
 #define ORG         "com.gfmgamecorner"
 /** Game's title (used both on the window's title bar and as the actual
  * sub-directory within ORG where logs and save data are stored) */
-#define TITLE       "GFM's LD#38 Entry"
+#define TITLE       "It's a Small World"
 /** Initial background color (only for the virtual window) */
 #define BG_COLOR    0xFF639BFF
 
