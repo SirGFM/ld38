@@ -11,6 +11,7 @@
 #include <GFraMe/gfmText.h>
 #include <ld38/inventory.h>
 #include <stdint.h>
+#include <string.h>
 
 /** Store the requirements within the program */
 struct stLinkReq {
@@ -129,6 +130,34 @@ void inventory_addArtifact(artifact a) {
 uint32_t invetory_getLinkPercentage() {
     return  (100 * inventory.linksMade) / (NUM_LINKS - 1);
 }
+
+#define X(en, name, ...) \
+    if (memcmp(pId, name, sizeof(name)) == 0) { \
+        return en; \
+    }
+
+/** Look-up a fact from its identifier */
+fact inventory_getFact(char *pId) {
+    X_FACTS
+
+    return FACT_ZERO;
+}
+
+/** Look-up a person from its identifier */
+person inventory_getPerson(char *pId) {
+    X_PEOPLE
+
+    return PERSON_ZERO;
+}
+
+/** Look-up an artifact from its identifier */
+artifact inventory_getArtifact(char *pId) {
+    X_ARTIFACTS
+
+    return ARTIFACT_ZERO;
+}
+
+#undef X
 
 /** Reset the inventory state */
 err inventorystate_reset() {

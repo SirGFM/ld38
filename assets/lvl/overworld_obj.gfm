@@ -1,5 +1,7 @@
-area place 56 184 48 32
+obj fact 32 184 48 32 [ flavor , "THIS LOCKED HOUSE... WE USED TO THINK IT WAS HAUNTED..." ] [ id , locked_house ]
 area place 168 136 64 64
 obj door 192 184 16 16 [ target , lvl/library_obj.gfm ]
 area wall -8 0 8 240
 area wall 322 0 8 240
+obj artifact 112 168 40 48 [ flavor , "YOU MAY BE RUNNING OUT OF TIME, BUT... WHAT THE HECK?" ] [ id , gosh ]
+obj person 88 216 8 8 [ flavor-0 , "WAS THAT MONSTROSITY MADE BY YOU?" ] [ flavor-1 , "WHY? >_<" ] [ id , weirdo ]

@@ -62,6 +62,7 @@ struct stChunk {
 /** Free all memory used by a chunk */
 void chunk_clean(chunk **ppCtx) {
     chunk *pCtx;
+    uint32_t i;
 
     if (!ppCtx || !*ppCtx) {
         return;
@@ -70,6 +71,22 @@ void chunk_clean(chunk **ppCtx) {
 
     gfmTilemap_free(&pCtx->pMap);
     gfmHitbox_free(&pCtx->pAreas);
+
+    for (i = 0; i < pCtx->interactableCount; i++) {
+        interactable *pData;
+        uint32_t j;
+
+        pData = pCtx->data + i;
+        if (pData->t != T_FACT && pData->t != T_PERSON
+                && pData->t != T_ARTIFACT) {
+            continue;
+        }
+
+        for (j = 0; j < pData->data.inventoryEntry.numFlavors; j++) {
+            free(pData->data.inventoryEntry.ppFlavor[j]);
+        }
+        free(pData->data.inventoryEntry.ppFlavor);
+    }
 
     free(*ppCtx);
     *ppCtx = 0;

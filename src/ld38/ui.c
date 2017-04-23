@@ -140,6 +140,12 @@ err ui_updateVerb(interactable *pEvent, int x, int y) {
             case ACT_ENTER: {
                 rv = gfmText_setTextStatic(ui.pVerb, "ENTER", 1/*doCopy*/);
             } break;
+            case ACT_INSPECT: {
+                rv = gfmText_setTextStatic(ui.pVerb, "INSPECT", 1/*doCopy*/);
+            } break;
+            case ACT_TALK: {
+                rv = gfmText_setTextStatic(ui.pVerb, "TALK", 1/*doCopy*/);
+            } break;
             default: {
                 ASSERT(0, ERR_INVALID_EVENT);
             }
@@ -154,6 +160,12 @@ err ui_updateVerb(interactable *pEvent, int x, int y) {
     switch (ui.verb) {
         case ACT_ENTER: {
             offX = -16;
+        } break;
+        case ACT_INSPECT: {
+            offX = -24;
+        } break;
+        case ACT_TALK: {
+            offX = -12;
         } break;
         default: {
         }

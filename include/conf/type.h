@@ -24,12 +24,15 @@
 
 /* Examples from my current main project */
 enum enType {
-      T_FLOOR        = gfmType_reserved_5  /* (8) purple */
+      T_PLAYER       = gfmType_reserved_4  /* (7) green */
     , T_INTERACTABLE = gfmType_reserved_3  /* (6) light blue */
-    , T_PLAYER       = gfmType_reserved_4  /* (7) green */
+    , T_FLOOR        = gfmType_reserved_5  /* (8) purple */
 
     , T_WALL         = (1 << T_BASE_NBITS) | T_FLOOR
     , T_DOOR         = (1 << T_BASE_NBITS) | T_INTERACTABLE
+    , T_FACT         = (2 << T_BASE_NBITS) | T_INTERACTABLE
+    , T_PERSON       = (3 << T_BASE_NBITS) | T_INTERACTABLE
+    , T_ARTIFACT     = (4 << T_BASE_NBITS) | T_INTERACTABLE
 };
 typedef enum enType type;
 

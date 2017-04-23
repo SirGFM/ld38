@@ -32,3 +32,19 @@ Only its position is used.
 
 A simple hitbox that blocks advancement of entities.
 
+### Interactables
+
+Objects that may be interacted with (toward the game's completition). They may
+have one of the following types:
+
+* `fact`
+* `artifact`
+* `person`
+
+The following properties are accepted by those types:
+
+* `flavor[\-0-9+]`: list of flavor texts, played sequentially
+* `id`: id of the object; looked up by the inventory
+
+**TODO:** Add a `base_anim` property to the `person` type.
+

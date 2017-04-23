@@ -25,13 +25,6 @@
 
 /** == ENUMERATION OF AVAILABLE STUFF ======================================= */
 
-enum enEntryType {
-    IET_FACT
-  , IET_PERSON
-  , IET_ARTIFACT
-};
-typedef enum enEntryType entryType;
-
 #define X(en, ...) en,
 
 enum enFact {
@@ -83,6 +76,15 @@ void inventory_addArtifact(artifact a);
 
 /** Check how many links were made */
 uint32_t invetory_getLinkPercentage();
+
+/** Look-up a fact from its identifier */
+fact inventory_getFact(char *pId);
+
+/** Look-up a person from its identifier */
+person inventory_getPerson(char *pId);
+
+/** Look-up an artifact from its identifier */
+artifact inventory_getArtifact(char *pId);
 
 /** Reset the inventory state */
 err inventorystate_reset();
