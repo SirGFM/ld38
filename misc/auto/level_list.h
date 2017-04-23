@@ -4,3 +4,5 @@
 "lvl/my_house_tm.gfm",
 "lvl/overworld_obj.gfm",
 "lvl/overworld_tm.gfm",
+"lvl/woodcarver_obj.gfm",
+"lvl/woodcarver_tm.gfm",

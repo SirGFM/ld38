@@ -1,3 +1,6 @@
 obj fact 168 147 80 40 [ flavor-0 , "THIS IS MY HOUSE" ] [ flavor-1 , "NOTHING SPECIAL ABOUT IT. JUST A REGULAR HOUSE..." ] [ id , my_house ]
 obj door 202 167 20 20 [ target , lvl/my_house_obj.gfm ]
 area wall -32 0 32 296
+obj fact 336 164 128 40 [ flavor-0 , "THIS HOUSE IS USUALLY QUITE NOISY..." ] [ flavor-1 , "MAKES ME WONDER ABOUT WHAT ITS OWNER IS ALWAYS DOING..." ] [ flavor-2 , "THIS IS THE ARTISTS BLOCK, AFTER ALL." ] [ flavor-3 , "MAYBE A LITTLE \"INVESTIGATION\" WOULDN'T HARM..." ] [ id , woodcarver_house ]
+obj artifact 264 168 16 16 [ flavor-0 , "THIS DOG STATUE APPEARED ONE DAY." ] [ flavor-1 , "I QUITE LIKE IT. BUT I WONDER WHO MADE IT..." ] [ flavor-2 , "IT DOES LOOKS LIKE ITS WATCHING OVER SOMETHING!" ] [ flavor-3 , "MAYBE SOMEONE AT THE EXPOSITION WILL KNOW ABOUT IT!" ] [ frame , 80 ] [ id , dog ]
+obj door 354 183 20 20 [ target , lvl/woodcarver_obj.gfm ]

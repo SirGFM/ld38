@@ -1,0 +1,5 @@
+area offset -336 -168 8 8
+area wall -14 -8 16 48
+area wall 126 -8 16 48
+obj door 18 15 20 20 [ target , pop ]
+obj fact 96 16 16 24 [ flavor-0 , "SOME WOOD BEING CARVED." ] [ flavor-1 , "THAT'S PROBABLY THE SOURCE OF ALL THAT NOISE." ] [ flavor-2 , "IT WOULD BE PRETTY FUNNY IF MY NEIGHBOUR WERE THE STATUE'S OWNER." ] [ id , unfinished_wood ]

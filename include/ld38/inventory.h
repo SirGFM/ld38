@@ -12,17 +12,18 @@
 
 #define X_FACTS \
     X(MY_HOUSE, "my_house") \
-    X(LOCKED_HOUSE, "locked_house")
+    X(WOODCARVER_HOUSE, "woodcarver_house") \
+    X(UNFINISHED_WOOD, "unfinished_wood")
 
 #define X_PEOPLE \
     X(WEIRDO, "weirdo")
 
 #define X_ARTIFACTS \
-    X(GOSH, "gosh")
+    X(DOG_STATUE, "dog")
 
 #define LINK_ARR(...) __VA_ARGS__
 #define X_LINKS \
-    X(LINK_A, "link_a", LINK_ARR({LOCKED_HOUSE, 0}), LINK_ARR({WEIRDO, 0}), LINK_ARR({GOSH, 0}))
+    X(LINK_A, "link_a", LINK_ARR({WOODCARVER_HOUSE, 0}), LINK_ARR({WEIRDO, 0}), LINK_ARR({DOG_STATUE, 0}))
 
 /** == ENUMERATION OF AVAILABLE STUFF ======================================= */
 
