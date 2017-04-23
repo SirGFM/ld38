@@ -16,14 +16,15 @@
     X(UNFINISHED_WOOD, "unfinished_wood")
 
 #define X_PEOPLE \
-    X(WEIRDO, "weirdo")
+    X(PAINTER, "painter")
 
 #define X_ARTIFACTS \
-    X(DOG_STATUE, "dog")
+    X(DOG_STATUE, "dog") \
+    X(BIRD_STATUE, "bird")
 
 #define LINK_ARR(...) __VA_ARGS__
 #define X_LINKS \
-    X(LINK_A, "link_a", LINK_ARR({WOODCARVER_HOUSE, 0}), LINK_ARR({WEIRDO, 0}), LINK_ARR({DOG_STATUE, 0}))
+    X(LINK_A, "link_a", LINK_ARR({WOODCARVER_HOUSE, 0}), LINK_ARR({PAINTER, 0}), LINK_ARR({DOG_STATUE, BIRD_STATUE, 0}))
 
 /** == ENUMERATION OF AVAILABLE STUFF ======================================= */
 
