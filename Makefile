@@ -29,6 +29,7 @@
          ld38/chunk.o \
          ld38/event_handler.o \
          ld38/level_list.o \
+         ld38/inventory.o \
          ld38/player.o \
          ld38/playstate.o \
          ld38/ui.o \

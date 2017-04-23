@@ -10,6 +10,7 @@
 #include <GFraMe/gframe.h>
 #include <GFraMe/gfmError.h>
 #include <GFraMe/gfmQuadtree.h>
+#include <ld38/inventory.h>
 #include <ld38/player.h>
 #include <ld38/playstate.h>
 #include <ld38/ui.h>
@@ -25,15 +26,19 @@ err mainloop() {
     ASSERT(erv == ERR_OK, erv);
     erv = ui_init();
     ASSERT(erv == ERR_OK, erv);
+    erv = inventory_init();
+    ASSERT(erv == ERR_OK, erv);
 
     /* Set initial state */
     game.nextState = ST_PLAYSTATE;
+    erv = playstate_reset();
+    ASSERT_TO(erv == ERR_OK, NOOP(), __ret);
 
     while (gfm_didGetQuitFlag(game.pCtx) != GFMRV_TRUE) {
         /* Switch state */
         if (game.nextState != ST_NONE) {
             switch (game.nextState) {
-                case ST_PLAYSTATE: erv = playstate_reset(); break;
+                case ST_INVENTORYSTATE: erv = inventorystate_reset(); break;
                 default: {}
             }
             ASSERT_TO(erv == ERR_OK, NOOP(), __ret);
@@ -66,6 +71,7 @@ err mainloop() {
             /* Update the current state */
             switch (game.currentState) {
                 case ST_PLAYSTATE: erv = playstate_update(); break;
+                case ST_INVENTORYSTATE: erv = inventorystate_update(); break;
                 default: {}
             }
             ASSERT_TO(erv == ERR_OK, NOOP(), __ret);
@@ -83,6 +89,7 @@ err mainloop() {
             /* Render the current state */
             switch (game.currentState) {
                 case ST_PLAYSTATE: erv = playstate_draw(); break;
+                case ST_INVENTORYSTATE: erv = inventorystate_update(); break;
                 default: {}
             }
             ASSERT_TO(erv == ERR_OK, NOOP(), __ret);
@@ -104,6 +111,7 @@ err mainloop() {
 
     erv = ERR_OK;
 __ret:
+    inventory_clean();
     ui_clean();
     playstate_clean();
     player_clean();
