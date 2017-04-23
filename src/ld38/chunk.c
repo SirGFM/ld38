@@ -52,6 +52,8 @@ struct stChunk {
     gfmSprite *ppSprites[MAX_SPRITES];
     /** Number of areas used */
     uint32_t areaCount;
+    /** Number of areas used */
+    uint32_t spritesCount;
     /** Number of interactables used */
     uint32_t interactableCount;
     /* Chunk's position */
@@ -93,7 +95,7 @@ void chunk_clean(chunk **ppCtx) {
         free(pData->data.inventoryEntry.ppFlavor);
     }
 
-    for (i = 0; i < MAX_SPRITES; i++) {
+    for (i = 0; i < pCtx->spritesCount; i++) {
         gfmSprite_free(&pCtx->ppSprites[i]);
     }
 
@@ -216,22 +218,16 @@ static err _doParseSprite(chunk *pCtx, gfmParser *pParser, interactable *pData
     }
     ASSERT(frame > 0, ERR_MISSINGPARAM);
 
-    pSpr = 0;
-    for (i = 0; i < MAX_SPRITES; i++) {
-        if (!(pCtx->ppSprites[i])) {
-            rv = gfmSprite_getNew(&pCtx->ppSprites[i]);
-            ASSERT(rv == GFMRV_OK, ERR_GFMERR);
-
-            pSpr = pCtx->ppSprites[i];
-            break;
-        }
-    }
-    ASSERT(pSpr, ERR_ALLOC_FAILED);
+    ASSERT(pCtx->spritesCount < MAX_SPRITES, ERR_ALLOC_FAILED);
+    rv = gfmSprite_getNew(&pCtx->ppSprites[pCtx->spritesCount]);
+    ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    pSpr = pCtx->ppSprites[pCtx->spritesCount];
+    pCtx->spritesCount++;
 
     x += pCtx->x;
     y += pCtx->y;
-    rv = gfmSprite_init(pSpr, x, y, 8/*width*/, 20/*height*/
-            , gfx.pSset16x16, -6/*offX*/, 0/*offY*/, &pData, t);
+    rv = gfmSprite_init(pSpr, x, y, 16/*width*/, 20/*height*/
+            , gfx.pSset16x16, 0/*offX*/, 0/*offY*/, pData, t);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
     rv = gfmSprite_setFrame(pSpr, frame);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
@@ -443,6 +439,7 @@ void chunk_configureCamera(chunk *pCtx) {
 /** Update the chunk and load this frame's collision information */
 err chunk_update(chunk *pCtx) {
     gfmRV rv;
+    uint32_t i;
 
     ASSERT(pCtx, ERR_ARGUMENTBAD);
 
@@ -457,6 +454,11 @@ err chunk_update(chunk *pCtx) {
     rv = gfmHitbox_populateQuadtree(pCtx->pAreas, collision.pQt, pCtx->areaCount);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
+    for (i = 0; i < pCtx->spritesCount; i++) {
+        gfmSprite_update(pCtx->ppSprites[i], game.pCtx);
+        gfmQuadtree_populateSprite(collision.pQt, pCtx->ppSprites[i]);
+    }
+
     return ERR_OK;
 }
 
@@ -464,6 +466,7 @@ err chunk_update(chunk *pCtx) {
 err chunk_draw(chunk *pCtx) {
     err erv;
     gfmRV rv;
+    uint32_t i;
 
     ASSERT(pCtx, ERR_ARGUMENTBAD);
 
@@ -474,6 +477,10 @@ err chunk_draw(chunk *pCtx) {
 
     rv = gfmTilemap_draw(pCtx->pMap, game.pCtx);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+
+    for (i = 0; i < pCtx->spritesCount; i++) {
+        gfmSprite_draw(pCtx->ppSprites[i], game.pCtx);
+    }
 
     return ERR_OK;
 }
