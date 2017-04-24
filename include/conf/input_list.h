@@ -55,9 +55,9 @@
         , gfmKey_return) \
   X_KEY(action \
         , gfmKey_x) \
-  X_KEY(left \
+  X_KEY(action \
         , gfmKey_w) \
-  X_KEY(left \
+  X_KEY(action \
         , gfmKey_z) \
   X_GPAD(action \
         , gfmController_a \
