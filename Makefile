@@ -32,6 +32,7 @@
          ld38/inventory.o \
          ld38/player.o \
          ld38/playstate.o \
+         ld38/sfx.o \
          ld38/ui.o \
 
 # Define the target name

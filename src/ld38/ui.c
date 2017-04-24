@@ -8,6 +8,7 @@
 #include <GFraMe/gfmText.h>
 #include <GFraMe/gfmTilemap.h>
 #include <ld38/interactable.h>
+#include <ld38/sfx.h>
 #include <ld38/ui.h>
 #include <string.h>
 
@@ -101,6 +102,21 @@ static uint32_t _ui_popQueue() {
     return 1;
 }
 
+static int did_skip = 0;
+static void _playSound(gfmText *pText, int skip) {
+    char c;
+
+    if (gfmText_getJustRendered(&c, pText) == GFMRV_OK) {
+        if (skip && !did_skip) {
+            did_skip = ~did_skip;
+            return;
+        }
+
+        did_skip = 0;
+        playText();
+    }
+}
+
 /** Check whether text is currently active. Return 1 on true */
 uint32_t ui_isTextActive() {
     gfmRV rv;
@@ -110,6 +126,7 @@ uint32_t ui_isTextActive() {
     }
 
     rv = gfmText_update(ui.pText, game.pCtx);
+    _playSound(ui.pText, 1);
     //ASSERT(rv == GFMRV_OK, 0);
     if (DID_JUST_PRESS(action)) {
         if (gfmText_didFinish(ui.pText) == GFMRV_TRUE) {
@@ -122,6 +139,8 @@ uint32_t ui_isTextActive() {
             rv = gfmText_forceFinish(ui.pText);
             ASSERT(rv == GFMRV_OK, 0);
         }
+
+        playOk();
     }
 
     return 1;
@@ -214,6 +233,7 @@ err ui_updateVerb(interactable *pEvent, int x, int y) {
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
     rv = gfmText_update(ui.pVerb, game.pCtx);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
+    _playSound(ui.pVerb, 0);
 
     return ERR_OK;
 }

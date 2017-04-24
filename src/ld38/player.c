@@ -12,6 +12,7 @@
 #include <GFraMe/gfmSprite.h>
 #include <ld38/entity_macros.h>
 #include <ld38/player.h>
+#include <ld38/sfx.h>
 #include <stdint.h>
 
 /** TODO ADJUST */
@@ -113,6 +114,17 @@ err player_update() {
     rv = gfmSprite_update(player.pSelf, game.pCtx);
     ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
+    if (vx != 0 && (dir & gfmCollision_down)) {
+        if (gfmSprite_didAnimationJustChangeFrame(player.pSelf) == GFMRV_TRUE) {
+            int frame;
+
+            gfmSprite_getFrame(&frame, player.pSelf);
+            if (frame == 50 || frame == 52) {
+                playStep();
+            }
+        }
+    }
+
     rv = gfmQuadtree_collideSprite(collision.pQt, player.pSelf);
     if (rv == GFMRV_QUADTREE_OVERLAPED) {
         erv = doCollide(collision.pQt);
@@ -180,6 +192,7 @@ err player_tryJump() {
         rv = gfmSprite_resetAnimation(player.pSelf);
         ASSERT(rv == GFMRV_OK, ERR_GFMERR);
 
+        playJump();
         player.justJumped = 1;
     }
 

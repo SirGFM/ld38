@@ -1,0 +1,127 @@
+MML//=======================================//
+//           Instruments template           //
+//==========================================//
+
+t120
+
+// Melody
+// optimal octaves would be... 3-6, maybe?
+// wave may be any from 0-3
+// 0 gives a more smooth (flute like?) sound
+// 1-3 gives a more sharp, crisp sound
+// melody take from JJAT
+w1 o5 l2 k5 q50 h60 v(30, 80)
+
+r g
+r e
+r1
+
+g4 c4 e
+r1
+
+$
+
+g c
+e d4 e4
+c > a4 < c4
+d r
+
+g c
+e d4 e4
+g a4 g4
+e r
+
+g c
+e d4 e4
+c r
+d r
+
+
+l4
+// Katawa shoujo like... (can't remember the song, though)
+a g a g
+e2 r2
+e d e g
+c2 > a < c
+d2 r2
+
+;
+
+// Bass (WIP)
+// wave: 0-1(?)
+// octaves: 2-3(?)
+w4 o3 l2 k20 q70 h80 v(80, 30)
+
+e r
+c r
+r1
+
+e c
+r1
+
+$
+
+e e
+c c
+> a a <
+c c
+
+e e
+c c
+> a a <
+c c
+
+l4
+
+e e e e
+c c c c
+> a a a a <
+c c c c
+
+e e e e
+c c c c
+> a a a a <
+c c c c
+
+e2 e2
+
+;
+
+// Bass (WIP)
+// wave: 0-1(?)
+// octaves: 2-3(?)
+w1 o3 l2 k20 q70 h80 v(35, 10)
+
+e r
+c r
+r1
+
+e c
+r1
+
+$
+
+e e
+c c
+> a a <
+c c
+
+e e
+c c
+> a a <
+c c
+
+l4
+
+e e e e
+c c c c
+> a a a a <
+c c c c
+
+e e e e
+c c c c
+> a a a a <
+c c c c
+
+e2 e2
+

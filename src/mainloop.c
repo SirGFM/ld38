@@ -13,6 +13,7 @@
 #include <ld38/inventory.h>
 #include <ld38/player.h>
 #include <ld38/playstate.h>
+#include <ld38/sfx.h>
 #include <ld38/ui.h>
 
 /** Run the main loop until the game is closed */
@@ -32,6 +33,9 @@ err mainloop() {
     /* Set initial state */
     game.nextState = ST_PLAYSTATE;
     erv = playstate_reset();
+    ASSERT_TO(erv == ERR_OK, NOOP(), __ret);
+
+    erv = playSong();
     ASSERT_TO(erv == ERR_OK, NOOP(), __ret);
 
     while (gfm_didGetQuitFlag(game.pCtx) != GFMRV_TRUE) {

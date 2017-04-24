@@ -9,6 +9,8 @@
 #include <base/setup.h>
 #include <base/static.h>
 
+#include <ld38/sfx.h>
+
 /**
  * Entry point. Setup everything and handle cleaning up the game, when it exits
  *
@@ -28,6 +30,9 @@ int main(int argc, char *argv[]) {
     ASSERT_TO(erv == ERR_OK, erv = erv, __ret);
 
     erv = initGfx();
+    ASSERT_TO(erv == ERR_OK, erv = erv, __ret);
+
+    erv = initSFX();
     ASSERT_TO(erv == ERR_OK, erv = erv, __ret);
 
     erv = initInput();
